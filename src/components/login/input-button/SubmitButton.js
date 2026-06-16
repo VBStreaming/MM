@@ -1,6 +1,6 @@
-function SubmitButton() {
+function SubmitButton(props) {
     return (
-        <button>로그인</button>
+        <button className={props.className} type={props.type || "submit"}>{props.text}</button>
     )
 }
 
