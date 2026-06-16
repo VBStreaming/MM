@@ -1,5 +1,6 @@
 import { Switch, Route } from "react-router-dom";
 import Body from "./components/Body";
+import LandingPage from "./pages/landing/LandingPage";
 import Login from "./pages/login/Login";
 import Signup from "./pages/signup/Signup";
 
@@ -7,7 +8,7 @@ function Router() {
     return (
         <Switch>
             <Route exact path="/">
-                <Login />
+                <LandingPage />
             </Route>
 
             <Route exact path="/body">
