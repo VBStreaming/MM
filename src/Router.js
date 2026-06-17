@@ -6,6 +6,7 @@ import Signup from "./pages/signup/Signup";
 import Header from "./components/Header";
 import MyPage from "./pages/mypage/MyPage";
 import BracketPage from "./pages/bracket/BracketPage";
+import CompetitionCreate from "./pages/competition-create/CompetitionCreate";
 
 function Router() {
     return (
@@ -16,6 +17,10 @@ function Router() {
 
             <Route exact path="/bracket">
                 <BracketPage />
+            </Route>
+
+            <Route exact path="/competitions/new">
+                <CompetitionCreate />
             </Route>
 
             <Route exact path="/body">
