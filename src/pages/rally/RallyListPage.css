@@ -1,0 +1,359 @@
+.rally-list-page {
+    min-height: 100dvh;
+    background: #f6f7f9;
+    color: #111827;
+    box-sizing: border-box;
+}
+
+.rally-list-shell {
+    width: min(100% - 48px, 922px);
+    margin: 0 auto;
+    padding: 32px 0 90px;
+}
+
+.rally-list-header {
+    min-height: 116px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.rally-list-header h1 {
+    margin: 0;
+    color: #030712;
+    font-size: 34px;
+    line-height: 1.15;
+    font-weight: 800;
+    letter-spacing: 0;
+}
+
+.rally-list-header p {
+    margin: 12px 0 0;
+    color: #374151;
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.rally-create-button {
+    min-width: 145px;
+    height: 42px;
+    margin-top: 24px;
+    padding: 0 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 8px;
+    background: #000000;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.14);
+}
+
+.rally-create-button:hover {
+    background: #111827;
+}
+
+.rally-create-button svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+.rally-tabs {
+    height: 54px;
+    display: flex;
+    align-items: flex-end;
+    gap: 42px;
+    border-bottom: 1px solid #d1d5db;
+}
+
+.rally-tabs button {
+    height: 34px;
+    padding: 0 4px 13px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: #374151;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.rally-tabs button.active {
+    border-bottom-color: #111827;
+    color: #111827;
+}
+
+.rally-table {
+    margin-top: 54px;
+}
+
+.rally-table-head,
+.rally-row {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 0.72fr 0.34fr;
+    align-items: center;
+    column-gap: 28px;
+}
+
+.rally-table-head {
+    padding: 0 24px 24px;
+    color: #6b7280;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.rally-table-head span:last-child {
+    text-align: right;
+}
+
+.rally-table-body {
+    display: grid;
+    gap: 12px;
+}
+
+.rally-row {
+    min-height: 80px;
+    padding: 18px 24px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 4px 10px rgba(17, 24, 39, 0.05);
+    box-sizing: border-box;
+}
+
+.rally-info-cell {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.rally-type-badge {
+    flex: 0 0 auto;
+    min-width: 50px;
+    height: 18px;
+    padding: 0 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    background: #f0f1f3;
+    color: #374151;
+    font-size: 9px;
+    line-height: 1;
+    font-weight: 800;
+}
+
+.rally-info-cell h2 {
+    min-width: 0;
+    margin: 0;
+    color: #111827;
+    font-size: 18px;
+    line-height: 1.35;
+    font-weight: 800;
+    letter-spacing: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.rally-period-cell {
+    display: grid;
+    gap: 4px;
+}
+
+.rally-period-cell p {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #374151;
+    font-size: 12px;
+    line-height: 1.25;
+}
+
+.rally-period-cell svg {
+    width: 13px;
+    height: 13px;
+    flex: 0 0 auto;
+    fill: #111827;
+}
+
+.rally-period-cell strong {
+    font-weight: 800;
+}
+
+.rally-participants-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #6b7280;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.rally-count-chip {
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #eef0f2;
+    color: #374151;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.rally-participants-cell strong {
+    color: #111827;
+    font-size: 16px;
+    font-weight: 900;
+}
+
+.rally-status-cell {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.rally-status-badge {
+    min-width: 52px;
+    height: 20px;
+    padding: 0 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 900;
+    box-sizing: border-box;
+}
+
+.rally-status-badge.active {
+    background: #000000;
+    color: #ffffff;
+}
+
+.rally-status-badge.recruiting {
+    border: 1px solid #cbd5e1;
+    background: #eef2f7;
+    color: #64748b;
+}
+
+.rally-status-badge.ended {
+    background: #eeeeef;
+    color: #70757d;
+}
+
+.rally-list-footer {
+    margin-top: 76px;
+    padding-top: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    border-top: 1px solid #d1d5db;
+}
+
+.rally-list-footer p {
+    margin: 0;
+    color: #374151;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.rally-pagination {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.rally-pagination button {
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #111827;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.rally-pagination button.active {
+    border-color: #000000;
+    background: #000000;
+    color: #ffffff;
+}
+
+.rally-pagination svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+@media (max-width: 820px) {
+    .rally-list-shell {
+        width: min(100% - 32px, 922px);
+        padding-top: 28px;
+    }
+
+    .rally-list-header {
+        min-height: auto;
+        flex-direction: column;
+        margin-bottom: 34px;
+    }
+
+    .rally-create-button {
+        width: 100%;
+        margin-top: 0;
+    }
+
+    .rally-tabs {
+        gap: 28px;
+        overflow-x: auto;
+    }
+
+    .rally-table {
+        margin-top: 32px;
+    }
+
+    .rally-table-head {
+        display: none;
+    }
+
+    .rally-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        align-items: flex-start;
+    }
+
+    .rally-info-cell {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .rally-info-cell h2 {
+        white-space: normal;
+    }
+
+    .rally-status-cell {
+        justify-content: flex-start;
+    }
+
+    .rally-list-footer {
+        margin-top: 40px;
+        padding-top: 28px;
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
