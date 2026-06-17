@@ -7,6 +7,7 @@ import Header from "./components/Header";
 import MyPage from "./pages/mypage/MyPage";
 import BracketPage from "./pages/bracket/BracketPage";
 import CompetitionCreate from "./pages/competition-create/CompetitionCreate";
+import RallyListPage from "./pages/rally/RallyListPage";
 
 function Router() {
     return (
@@ -21,6 +22,10 @@ function Router() {
 
             <Route exact path="/competitions/new">
                 <CompetitionCreate />
+            </Route>
+
+            <Route exact path={["/rally", "/competitions"]}>
+                <RallyListPage />
             </Route>
 
             <Route exact path="/body">
