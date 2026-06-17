@@ -1,0 +1,545 @@
+.bracket-page {
+    min-height: 100vh;
+    background: #f9fafb;
+    color: #111827;
+    padding: 48px 64px;
+    box-sizing: border-box;
+}
+
+.bracket-hero {
+    max-width: 720px;
+    margin-bottom: 28px;
+}
+
+.eyebrow {
+    margin: 0 0 8px;
+    color: #6b7280;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.bracket-hero h1,
+.panel-header h2,
+.section-title h3 {
+    margin: 0;
+    color: #111827;
+}
+
+.bracket-hero h1 {
+    font-size: 42px;
+    line-height: 1.15;
+}
+
+.bracket-hero p:last-child {
+    margin: 14px 0 0;
+    color: #6b7280;
+    line-height: 1.7;
+}
+
+.bracket-panel,
+.league-card,
+.tournament-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 28px;
+    box-shadow: 0 18px 45px rgba(17, 24, 39, 0.08);
+}
+
+.bracket-panel {
+    padding: 28px;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.panel-header h2 {
+    font-size: 26px;
+}
+
+.control-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.count-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    padding: 7px 10px;
+    background: #ffffff;
+    color: #6b7280;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.count-control input {
+    width: 54px;
+    border: 0;
+    outline: 0;
+    color: #111827;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.mode-button,
+.shuffle-button {
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    padding: 11px 18px;
+    background: #ffffff;
+    color: #374151;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.mode-button.active,
+.shuffle-button {
+    border-color: #111827;
+    background: #111827;
+    color: #ffffff;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin: 24px 0;
+}
+
+.summary-grid div {
+    border-radius: 18px;
+    background: #f3f4f6;
+    padding: 18px;
+}
+
+.summary-grid span {
+    display: block;
+    margin-bottom: 8px;
+    color: #6b7280;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.summary-grid strong {
+    font-size: 22px;
+}
+
+.league-card,
+.tournament-card {
+    padding: 22px;
+}
+
+.tournament-card {
+    min-height: 670px;
+}
+
+.section-title {
+    margin-bottom: 18px;
+}
+
+.section-title h3 {
+    font-size: 22px;
+}
+
+.league-table {
+    display: grid;
+    overflow-x: auto;
+    border: 1px solid #d1d5db;
+    border-radius: 18px;
+}
+
+.league-cell {
+    min-height: 78px;
+    border-right: 1px dashed #9ca3af;
+    border-bottom: 1px dashed #9ca3af;
+    box-sizing: border-box;
+}
+
+.league-cell span,
+.participant-card span {
+    display: block;
+    color: #6b7280;
+    font-size: clamp(10px, 0.75vw, 12px);
+    font-weight: 700;
+}
+
+.league-cell strong,
+.participant-card strong {
+    display: block;
+    margin-top: 4px;
+    color: #111827;
+    font-size: var(--card-font, 16px);
+}
+
+.table-corner,
+.table-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f9fafb;
+    padding: 12px;
+    text-align: center;
+}
+
+.row-head {
+    background: #ffffff;
+}
+
+.match-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+    font-weight: 800;
+}
+
+.match-cell.disabled {
+    background: linear-gradient(135deg, transparent 49%, #6b7280 50%, transparent 51%);
+}
+
+.tournament-board {
+    overflow-x: auto;
+    padding: 28px 8px 22px;
+}
+
+.split-board {
+    display: grid;
+    grid-template-columns: minmax(130px, 1.15fr) minmax(120px, 0.9fr) minmax(115px, 0.85fr) minmax(150px, 1fr) minmax(115px, 0.85fr) minmax(120px, 0.9fr) minmax(130px, 1.15fr);
+    align-items: center;
+    gap: clamp(8px, 1.2vw, 18px);
+    width: 100%;
+    min-height: var(--board-height);
+}
+
+.tournament-side {
+    display: contents;
+}
+
+.tournament-side.left .first-round {
+    grid-column: 1;
+}
+
+.tournament-side.left .side-final {
+    grid-column: 2;
+}
+
+.tournament-side.left .finalist-round {
+    grid-column: 3;
+}
+
+.final-column {
+    grid-column: 4;
+}
+
+.tournament-side.right .finalist-round {
+    grid-column: 5;
+}
+
+.tournament-side.right .side-final {
+    grid-column: 6;
+}
+
+.tournament-side.right .first-round {
+    grid-column: 7;
+}
+
+.side-column {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    grid-row: 1;
+    min-height: var(--board-height);
+}
+
+.side-column,
+.final-column {
+    min-width: 0;
+}
+
+.side-column h4,
+.final-column h4 {
+    margin: 0 0 14px;
+    color: #374151;
+    font-size: 17px;
+    text-align: center;
+}
+
+.match-list {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    gap: var(--match-gap);
+    width: 100%;
+    min-height: calc(var(--board-height) - 48px);
+}
+
+.side-final {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.final-column {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    grid-row: 1;
+    align-self: center;
+    min-height: var(--board-height);
+}
+
+.finalist-round .participant-card {
+    width: 100%;
+}
+
+.finalist-round {
+    justify-content: center;
+}
+
+.final-match {
+    position: relative;
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+
+.final-match .participant-card {
+    flex: 1;
+    min-width: 0;
+}
+
+.winner-card {
+    width: 82%;
+    margin-bottom: 16px;
+}
+
+.trophy-image {
+    width: 82px;
+    height: 82px;
+    object-fit: contain;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 10px 16px rgba(17, 24, 39, 0.18));
+}
+
+.center-final-line {
+    width: 2px;
+    height: 34px;
+    background: #d1d5db;
+}
+
+.final-title {
+    margin-top: 10px !important;
+}
+
+.match-pair {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    min-height: var(--match-height);
+    box-sizing: border-box;
+}
+
+.tournament-side.left .match-pair::after {
+    content: "";
+    position: absolute;
+    top: calc(var(--player-height) / 2);
+    bottom: calc(var(--player-height) / 2);
+    right: -18px;
+    border-right: 2px solid #d1d5db;
+}
+
+.tournament-side.left .match-pair::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -36px;
+    width: 36px;
+    border-top: 2px solid #d1d5db;
+}
+
+.tournament-side.left .match-pair .participant-card::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -18px;
+    width: 18px;
+    border-top: 2px solid #d1d5db;
+}
+
+.tournament-side.left .side-final .participant-card::before,
+.tournament-side.left .finalist-card::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -36px;
+    width: 36px;
+    border-top: 2px solid #d1d5db;
+}
+
+.tournament-side.right .match-pair::after {
+    content: "";
+    position: absolute;
+    top: calc(var(--player-height) / 2);
+    bottom: calc(var(--player-height) / 2);
+    left: -18px;
+    border-left: 2px solid #d1d5db;
+}
+
+.tournament-side.right .match-pair::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -36px;
+    width: 36px;
+    border-top: 2px solid #d1d5db;
+}
+
+.tournament-side.right .match-pair .participant-card::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -18px;
+    width: 18px;
+    border-top: 2px solid #d1d5db;
+}
+
+.tournament-side.right .side-final .participant-card::after,
+.tournament-side.right .finalist-card::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -36px;
+    width: 36px;
+    border-top: 2px solid #d1d5db;
+}
+
+.tournament-side.left .finalist-card::after,
+.final-match .participant-card:first-child::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 22px;
+    border-top: 2px solid #d1d5db;
+}
+
+.tournament-side.left .finalist-card::after {
+    right: -22px;
+}
+
+.final-match .participant-card:first-child::before {
+    left: -22px;
+}
+
+.tournament-side.right .finalist-card::before,
+.final-match .participant-card:last-child::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 22px;
+    border-top: 2px solid #d1d5db;
+}
+
+.tournament-side.right .finalist-card::before {
+    left: -22px;
+}
+
+.final-match .participant-card:last-child::after {
+    right: -22px;
+}
+
+.match-number {
+    position: absolute;
+    top: -16px;
+    left: 0;
+    z-index: 2;
+    display: inline-block;
+    margin: 0;
+    border-radius: 999px;
+    background: #111827;
+    color: #ffffff;
+    padding: 4px 9px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.participant-card {
+    position: relative;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    background: #ffffff;
+    padding: clamp(10px, 0.9vw, 13px);
+    min-height: var(--player-height);
+    box-sizing: border-box;
+}
+
+.participant-card.is-clickable {
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.participant-card.is-clickable:hover {
+    border-color: #93c5fd;
+    box-shadow: 0 8px 18px rgba(37, 99, 235, 0.12);
+    transform: translateY(-1px);
+}
+
+.participant-card.is-selected {
+    border-color: #2563eb;
+    background: #eff6ff;
+}
+
+.participant-card.is-selected strong {
+    color: #2563eb;
+}
+
+.participant-card.is-bye {
+    background: #f3f4f6;
+}
+
+@media (max-width: 900px) {
+    .bracket-page {
+        padding: 32px 18px;
+    }
+
+    .panel-header {
+        flex-direction: column;
+    }
+
+    .control-group {
+        justify-content: flex-start;
+    }
+
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .split-board {
+        min-width: 900px;
+        grid-template-columns: 150px 115px 105px 135px 105px 115px 150px;
+        min-height: var(--board-height);
+        gap: 14px;
+    }
+
+    .match-pair {
+        min-height: var(--match-height);
+    }
+}

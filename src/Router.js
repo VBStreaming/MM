@@ -5,12 +5,17 @@ import Login from "./pages/login/Login";
 import Signup from "./pages/signup/Signup";
 import Header from "./components/Header";
 import MyPage from "./pages/mypage/MyPage";
+import BracketPage from "./pages/bracket/BracketPage";
 
 function Router() {
     return (
         <Switch>
             <Route exact path="/">
                 <LandingPage />
+            </Route>
+
+            <Route exact path="/bracket">
+                <BracketPage />
             </Route>
 
             <Route exact path="/body">
