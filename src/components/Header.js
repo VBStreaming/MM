@@ -1,7 +1,16 @@
 import "./Header.css"
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { getCurrentUser, logoutUser } from "../utils/localData";
 
 function Header() {
+    const history = useHistory();
+    const currentUser = getCurrentUser();
+
+    const handleLogout = () => {
+        logoutUser();
+        history.push("/");
+    };
+
     return (
         <header className="site-header">
             <Link className="site-brand" to="/">
@@ -11,8 +20,18 @@ function Header() {
                 <span>BracketMaster</span>
             </Link>
             <nav className="site-nav" aria-label="Main navigation">
-                <Link to="/tournaments">Tournaments</Link>
+                <Link to="/competitions">Tournaments</Link>
                 <Link to="/brackets">Brackets</Link>
+                {currentUser ? (
+                    <>
+                        <Link to="/mypage">My Page</Link>
+                        <button className="site-nav-button" type="button" onClick={handleLogout}>
+                            Logout
+                        </button>
+                    </>
+                ) : (
+                    <Link to="/signup">Sign Up</Link>
+                )}
             </nav>
         </header>
     )

@@ -58,6 +58,13 @@
     align-items: flex-start;
 }
 
+.panel-header-copy p:last-child {
+    margin: 10px 0 0;
+    color: #6b7280;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
 .panel-header h2 {
     font-size: 26px;
 }
@@ -92,7 +99,8 @@
 }
 
 .mode-button,
-.shuffle-button {
+.shuffle-button,
+.panel-route-link {
     border: 1px solid #d1d5db;
     border-radius: 10px;
     padding: 11px 18px;
@@ -100,6 +108,7 @@
     color: #374151;
     cursor: pointer;
     font-weight: 700;
+    text-decoration: none;
 }
 
 .mode-button.active,
@@ -137,6 +146,132 @@
 .league-card,
 .tournament-card {
     padding: 22px;
+}
+
+.league-schedule-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.league-schedule-summary {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+    gap: 6px;
+    color: #6b7280;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.league-schedule-summary strong {
+    color: #111827;
+    font-size: 18px;
+}
+
+.league-schedule-toolbar {
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 18px;
+    border-radius: 16px;
+    background: #f3f4f6;
+}
+
+.league-schedule-toolbar strong {
+    color: #111827;
+    font-size: 16px;
+}
+
+.league-round-button {
+    min-width: 104px;
+    height: 36px;
+    padding: 0 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #111827;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.league-round-button:disabled {
+    cursor: default;
+    opacity: 0.45;
+}
+
+.league-round-list {
+    display: grid;
+    gap: 14px;
+}
+
+.league-round-card {
+    padding: 18px;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    background: #ffffff;
+}
+
+.league-round-card__index {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 56px;
+    height: 24px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: #111827;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.league-round-card__teams {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 12px;
+    align-items: center;
+}
+
+.league-round-card__teams .participant-card {
+    min-height: 72px;
+}
+
+.league-round-card__vs {
+    color: #6b7280;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.bracket-empty-state {
+    padding: 44px 28px;
+    border: 1px dashed #d1d5db;
+    border-radius: 20px;
+    background: #f9fafb;
+    text-align: center;
+}
+
+.bracket-empty-state h3 {
+    margin: 0;
+    color: #111827;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.bracket-empty-state p {
+    margin: 12px 0 0;
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.bracket-empty-state strong {
+    color: #111827;
 }
 
 .tournament-card {
@@ -530,6 +665,24 @@
 
     .summary-grid {
         grid-template-columns: 1fr;
+    }
+
+    .league-schedule-header,
+    .league-schedule-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .league-schedule-summary {
+        align-items: flex-start;
+    }
+
+    .league-round-card__teams {
+        grid-template-columns: 1fr;
+    }
+
+    .league-round-card__vs {
+        text-align: center;
     }
 
     .split-board {

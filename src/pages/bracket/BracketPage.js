@@ -1,24 +1,13 @@
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import {
+    getCompetitionById,
+    getCompetitionStatusInfo,
+    getSelectedCompetition,
+    saveCompetitionBracketState,
+    setSelectedCompetitionId,
+} from "../../utils/localData";
 import "./BracketPage.css";
-
-const dummyParticipants = [
-    { id: 1, team: "중앙대", name: "김지수" },
-    { id: 2, team: "단국대", name: "박민준" },
-    { id: 3, team: "수성대", name: "이서연" },
-    { id: 4, team: "전남과학대", name: "최도윤" },
-    { id: 5, team: "동아대", name: "정하은" },
-    { id: 6, team: "홍익대", name: "강현우" },
-    { id: 7, team: "경기대", name: "윤지호" },
-    { id: 8, team: "건양대", name: "한유진" },
-    { id: 9, team: "아산", name: "이기준" },
-    { id: 10, team: "아산", name: "조성민" },
-    { id: 11, team: "하현", name: "김선민" },
-    { id: 12, team: "하현", name: "임재범" },
-    { id: 13, team: "목사랑", name: "권오완" },
-    { id: 14, team: "목사랑", name: "강현진" },
-    { id: 15, team: "천도", name: "차재민" },
-    { id: 16, team: "천도", name: "이민구" },
-];
 
 function shuffleParticipants(participants) {
     const result = [...participants];
@@ -55,7 +44,73 @@ function getRoundName(matchCount) {
     return `${matchCount * 2}강`;
 }
 
+function makeLeagueRounds(participants) {
+    const byeParticipant = {
+        id: "league-bye",
+        team: "부전승",
+        name: "휴식",
+        isPlaceholder: true,
+    };
+    const players = participants.length % 2 === 0
+        ? [...participants]
+        : [...participants, byeParticipant];
+    const rounds = [];
+
+    if (players.length < 2) {
+        return rounds;
+    }
+
+    let rotation = [...players];
+
+    for (let roundIndex = 0; roundIndex < rotation.length - 1; roundIndex++) {
+        const matches = [];
+
+        for (let pairIndex = 0; pairIndex < rotation.length / 2; pairIndex++) {
+            const home = rotation[pairIndex];
+            const away = rotation[rotation.length - 1 - pairIndex];
+
+            if (home.id === byeParticipant.id || away.id === byeParticipant.id) {
+                continue;
+            }
+
+            matches.push({
+                id: `league-round-${roundIndex + 1}-match-${pairIndex + 1}`,
+                home,
+                away,
+            });
+        }
+
+        rounds.push({
+            id: `league-round-${roundIndex + 1}`,
+            label: `${roundIndex + 1}라운드`,
+            matches,
+        });
+
+        const fixedPlayer = rotation[0];
+        const rotatingPlayers = rotation.slice(1);
+        const lastPlayer = rotatingPlayers.pop();
+
+        rotation = [
+            fixedPlayer,
+            lastPlayer,
+            ...rotatingPlayers,
+        ];
+    }
+
+    return rounds;
+}
+
 function makeTournamentBracket(participants) {
+    if (participants.length < 2) {
+        return {
+            firstRoundName: "",
+            leftFirstRound: [],
+            rightFirstRound: [],
+            leftSide: [],
+            rightSide: [],
+        };
+    }
+
     const bracketSize = getBracketSize(participants.length);
     const seededParticipants = [...participants];
 
@@ -143,10 +198,43 @@ function ParticipantCard({ participant, className = "", isSelected = false, onCl
 }
 
 function BracketPage() {
-    const [matchType, setMatchType] = useState("league");
-    const [participantCount, setParticipantCount] = useState(15);
-    const [participants, setParticipants] = useState(dummyParticipants.slice(0, participantCount));
-    const [winners, setWinners] = useState({});
+    const { competitionId } = useParams();
+    const competition = useMemo(
+        () => getCompetitionById(competitionId) || getSelectedCompetition(),
+        [competitionId]
+    );
+    const competitionParticipants = useMemo(() => (
+        Array.isArray(competition?.participants) ? competition.participants : []
+    ), [competition]);
+    const savedParticipants = useMemo(() => {
+        if (Array.isArray(competition?.bracketParticipants) && competition.bracketParticipants.length > 0) {
+            return competition.bracketParticipants;
+        }
+
+        return competitionParticipants;
+    }, [competition, competitionParticipants]);
+    const savedWinners = useMemo(() => (
+        competition?.bracketWinners && typeof competition.bracketWinners === "object"
+            ? competition.bracketWinners
+            : {}
+    ), [competition]);
+    const hasEnoughParticipants = competitionParticipants.length >= 4;
+    const competitionStatus = competition
+        ? getCompetitionStatusInfo(competition.startDate, competition.endDate)
+        : { label: "샘플 데이터" };
+    const [matchType, setMatchType] = useState(competition?.savedMatchType || competition?.type || "league");
+    const [participants, setParticipants] = useState(savedParticipants);
+    const [winners, setWinners] = useState(savedWinners);
+
+    useEffect(() => {
+        if (competition?.id) {
+            setSelectedCompetitionId(competition.id);
+        }
+
+        setMatchType(competition?.savedMatchType || competition?.type || "league");
+        setParticipants(savedParticipants);
+        setWinners(savedWinners);
+    }, [competition, savedParticipants, savedWinners]);
 
     const tournamentBracket = useMemo(() => makeTournamentBracket(participants), [participants]);
     const automaticByeWinners = useMemo(() => {
@@ -170,65 +258,84 @@ function BracketPage() {
     }, [tournamentBracket]);
     const tournamentWinners = { ...automaticByeWinners, ...winners };
 
-    const onShuffle = () => {
-        setParticipants(shuffleParticipants(participants));
-        setWinners({});
+    const saveBracketState = (nextParticipants, nextWinners, nextMatchType = matchType) => {
+        if (!competition?.id) {
+            return;
+        }
+
+        saveCompetitionBracketState(competition.id, {
+            participants: nextParticipants,
+            winners: nextWinners,
+            matchType: nextMatchType,
+        });
     };
 
-    const onChangeParticipantCount = (e) => {
-        const nextCount = Number(e.target.value);
+    const handleMatchTypeChange = (nextMatchType) => {
+        setMatchType(nextMatchType);
+        saveBracketState(participants, winners, nextMatchType);
+    };
 
-        setParticipantCount(nextCount);
-        setParticipants(dummyParticipants.slice(0, nextCount));
+    const handleWinnersChange = (nextWinnersOrUpdater) => {
+        setWinners((currentWinners) => {
+            const nextWinners = typeof nextWinnersOrUpdater === "function"
+                ? nextWinnersOrUpdater(currentWinners)
+                : nextWinnersOrUpdater;
+
+            saveBracketState(participants, nextWinners, matchType);
+
+            return nextWinners;
+        });
+    };
+
+    const onShuffle = () => {
+        const shuffledParticipants = shuffleParticipants(participants);
+
+        setParticipants(shuffledParticipants);
         setWinners({});
+        saveBracketState(shuffledParticipants, {}, matchType);
     };
 
     return (
         <main className="bracket-page">
             <section className="bracket-hero">
                 <p className="eyebrow">BracketMaster</p>
-                <h1>대진표 생성</h1>
+                <h1>{competition ? `${competition.title} 대진표` : "대진표 생성"}</h1>
                 <p>
-                    참가 신청이 끝난 뒤 참가자 리스트를 랜덤으로 섞어서 리그전 또는 토너먼트
-                    대진표로 보여주는 페이지입니다.
+                    {competition?.description || "참가 신청이 끝난 뒤 참가자 리스트를 랜덤으로 섞어서 리그전 또는 토너먼트 대진표로 보여주는 페이지입니다."}
                 </p>
             </section>
 
             <section className="bracket-panel">
                 <div className="panel-header">
-                    <div>
+                    <div className="panel-header-copy">
                         <p className="eyebrow">Tournament</p>
-                        <h2>웹프로그래밍 수행평가 대회</h2>
+                        <h2>{competition?.title || "웹프로그래밍 수행평가 대회"}</h2>
+                        <p>{competition ? "대회 목록에서 선택한 데이터를 그대로 불러왔습니다." : "선택된 대회가 없어서 기본 샘플 데이터를 보여주고 있습니다."}</p>
                     </div>
 
                     <div className="control-group">
-                        <label className="count-control">
-                            참가 인원
-                            <input
-                                max={dummyParticipants.length}
-                                min="4"
-                                onChange={onChangeParticipantCount}
-                                type="number"
-                                value={participantCount}
-                            />
-                        </label>
+                        <Link className="panel-route-link" to="/competitions">
+                            대회 목록 보기
+                        </Link>
                         <button
                             className={matchType === "league" ? "mode-button active" : "mode-button"}
-                            onClick={() => setMatchType("league")}
+                            onClick={() => handleMatchTypeChange("league")}
                             type="button"
                         >
                             리그
                         </button>
                         <button
                             className={matchType === "tournament" ? "mode-button active" : "mode-button"}
-                            onClick={() => setMatchType("tournament")}
+                            onClick={() => handleMatchTypeChange("tournament")}
                             type="button"
                         >
                             토너먼트
                         </button>
-                        <button className="shuffle-button" onClick={onShuffle} type="button">
-                            랜덤 섞기
-                        </button>
+                        {hasEnoughParticipants && (
+                            <button className="shuffle-button" onClick={onShuffle} type="button">
+                                랜덤 섞기
+                            </button>
+                        )}
                     </div>
                 </div>
 
@@ -242,15 +349,23 @@ function BracketPage() {
                         <strong>{matchType === "league" ? "리그전" : "토너먼트"}</strong>
                     </div>
                     <div>
-                        <span>현재 데이터</span>
-                        <strong>더미 참가자</strong>
+                        <span>대회 상태</span>
+                        <strong>{competitionStatus.label}</strong>
                     </div>
                 </div>
 
-                {matchType === "league" ? (
+                {!hasEnoughParticipants ? (
+                    <section className="bracket-empty-state">
+                        <h3>아직 대진표를 만들 수 없습니다.</h3>
+                        <p>
+                            현재 신청 인원은 <strong>{participants.length}명</strong>입니다.
+                            대진표를 만들려면 최소 4명 이상 신청해야 합니다.
+                        </p>
+                    </section>
+                ) : matchType === "league" ? (
                     <LeagueTable participants={participants} />
                 ) : (
-                    <TournamentBracket bracket={tournamentBracket} winners={tournamentWinners} setWinners={setWinners} />
+                    <TournamentBracket bracket={tournamentBracket} winners={tournamentWinners} setWinners={handleWinnersChange} />
                 )}
             </section>
         </main>
@@ -258,6 +373,66 @@ function BracketPage() {
 }
 
 function LeagueTable({ participants }) {
+    const leagueRounds = useMemo(() => makeLeagueRounds(participants), [participants]);
+    const [activeRoundIndex, setActiveRoundIndex] = useState(0);
+
+    useEffect(() => {
+        setActiveRoundIndex(0);
+    }, [leagueRounds.length]);
+
+    if (participants.length > 8) {
+        const activeRound = leagueRounds[activeRoundIndex] || null;
+
+        return (
+            <section className="league-card">
+                <div className="league-schedule-header">
+                    <div className="section-title">
+                        <p className="eyebrow">League</p>
+                        <h3>리그전 일정표</h3>
+                    </div>
+
+                    <div className="league-schedule-summary">
+                        <span>참가자 {participants.length}명</span>
+                        <strong>총 {leagueRounds.length}라운드</strong>
+                    </div>
+                </div>
+
+                <div className="league-schedule-toolbar">
+                    <button
+                        type="button"
+                        className="league-round-button"
+                        onClick={() => setActiveRoundIndex((currentIndex) => Math.max(currentIndex - 1, 0))}
+                        disabled={activeRoundIndex === 0}
+                    >
+                        이전 라운드
+                    </button>
+                    <strong>{activeRound?.label || "라운드 준비 중"}</strong>
+                    <button
+                        type="button"
+                        className="league-round-button"
+                        onClick={() => setActiveRoundIndex((currentIndex) => Math.min(currentIndex + 1, leagueRounds.length - 1))}
+                        disabled={activeRoundIndex === leagueRounds.length - 1}
+                    >
+                        다음 라운드
+                    </button>
+                </div>
+
+                <div className="league-round-list">
+                    {activeRound?.matches.map((match, index) => (
+                        <article className="league-round-card" key={match.id}>
+                            <span className="league-round-card__index">{index + 1}경기</span>
+                            <div className="league-round-card__teams">
+                                <ParticipantCard participant={match.home} />
+                                <span className="league-round-card__vs">VS</span>
+                                <ParticipantCard participant={match.away} />
+                            </div>
+                        </article>
+                    ))}
+                </div>
+            </section>
+        );
+    }
+
     return (
         <section className="league-card">
             <div className="section-title">

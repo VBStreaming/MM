@@ -114,6 +114,16 @@
     cursor: pointer;
 }
 
+.signup-feedback {
+    margin: -4px 0 14px;
+    font-size: 9px;
+    line-height: 1.45;
+}
+
+.signup-feedback--error {
+    color: #b91c1c;
+}
+
 .signup-submit-button:hover {
     background: #111827;
 }

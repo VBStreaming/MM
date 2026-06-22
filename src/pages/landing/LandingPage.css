@@ -56,16 +56,26 @@
 }
 
 .top-bar__brand {
+  border: 0;
+  padding: 0;
+  background: transparent;
   color: var(--color-main);
   font-size: 22px;
   font-weight: 800;
   letter-spacing: -0.03em;
+  cursor: pointer;
 }
 
 .top-bar__actions {
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.top-bar__welcome {
+  color: var(--color-muted);
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .top-bar__link,

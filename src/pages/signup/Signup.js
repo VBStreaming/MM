@@ -1,28 +1,52 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import InputButton from "../../components/login/input-button/InputButton";
 import SubmitButton from "../../components/login/input-button/SubmitButton";
+import { registerUser } from "../../utils/localData";
 import "./Signup.css";
 
 function Signup() {
+    const history = useHistory();
     const [fullName, setFullName] = useState("");
     const [studentId, setStudentId] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [agreed, setAgreed] = useState(false);
+    const [error, setError] = useState("");
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        console.log({
+        if (!fullName.trim() || !studentId.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
+            setError("모든 필드를 입력해주세요.");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            setError("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+            return;
+        }
+
+        if (!agreed) {
+            setError("약관 동의가 필요합니다.");
+            return;
+        }
+
+        const registerResult = registerUser({
             fullName,
             studentId,
             email,
             password,
-            confirmPassword,
-            agreed,
         });
+
+        if (!registerResult.success) {
+            setError(registerResult.message);
+            return;
+        }
+
+        setError("");
+        history.push("/mypage");
     };
 
     return (
@@ -92,6 +116,8 @@ function Signup() {
                         <span>I agree to the Terms and Conditions and the Privacy Policy regarding data handling and competition rules.</span>
                     </label>
 
+                    {error && <p className="signup-feedback signup-feedback--error">{error}</p>}
+
                     <SubmitButton className="signup-submit-button" text="Sign Up" />
                 </form>
 
@@ -120,9 +146,9 @@ function Signup() {
             <footer className="signup-footer">
                 <p><strong>BracketMaster Pro</strong> © 2024 All rights reserved.</p>
                 <nav aria-label="Legal links">
-                    <a href="/privacy">Privacy Policy</a>
-                    <a href="/terms">Terms of Service</a>
-                    <a href="/support">Contact Support</a>
+                    <Link to="/">Privacy Policy</Link>
+                    <Link to="/">Terms of Service</Link>
+                    <Link to="/competitions">Contact Support</Link>
                 </nav>
             </footer>
         </main>

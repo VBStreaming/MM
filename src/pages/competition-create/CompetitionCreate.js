@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useHistory } from "react-router-dom";
+import { saveCompetition } from "../../utils/localData";
 import "./CompetitionCreate.css";
 
 function CompetitionCreate() {
+    const history = useHistory();
     const [form, setForm] = useState({
         title: "",
         type: "league",
@@ -27,8 +30,8 @@ function CompetitionCreate() {
             return;
         }
 
-        if (!form.maxParticipants || Number(form.maxParticipants) < 1) {
-            setError("최대 인원수를 1명 이상으로 입력해주세요.");
+        if (!form.maxParticipants || Number(form.maxParticipants) < 4) {
+            setError("최대 인원수는 4명 이상으로 입력해주세요.");
             return;
         }
 
@@ -43,7 +46,8 @@ function CompetitionCreate() {
         }
 
         setError("");
-        console.log(form);
+        saveCompetition(form);
+        history.push("/competitions");
     };
 
     return (
@@ -94,7 +98,7 @@ function CompetitionCreate() {
                             <input
                                 id="maxParticipants"
                                 type="number"
-                                min="1"
+                                min="4"
                                 value={form.maxParticipants}
                                 onChange={(event) => updateField("maxParticipants", event.target.value)}
                                 placeholder="예: 32"
@@ -135,7 +139,11 @@ function CompetitionCreate() {
                     </div>
 
                     <div className="competition-create-actions">
-                        <button type="button" className="competition-cancel-button">
+                        <button
+                            type="button"
+                            className="competition-cancel-button"
+                            onClick={() => history.push("/competitions")}
+                        >
                             취소
                         </button>
                         <button type="submit" className="competition-submit-button">

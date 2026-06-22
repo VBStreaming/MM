@@ -9,7 +9,10 @@ import "./LandingPage.css";
 function LandingPage() {
   return (
     <div className="landing-page">
+      {/* 랜딩페이지 분위기를 만드는 배경 장식 */}
       <div className="landing-page__background" />
+
+      {/* 랜딩페이지를 상단바, 소개, 기능, 미리보기, 푸터 순서로 조립 */}
       <TopBar />
       <HeroSection />
       <FeatureSection />

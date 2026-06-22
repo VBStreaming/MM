@@ -1,22 +1,44 @@
 import InputButton from "../../components/login/input-button/InputButton";
-import {useState} from "react";
+import { useState } from "react";
 import SubmitButton from "../../components/login/input-button/SubmitButton";
 import "./Login.css";
-import { Link } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
+import { getUsers, loginUser } from "../../utils/localData";
 
 function Login() {
+    const history = useHistory();
+    const location = useLocation();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
+    const [error, setError] = useState("");
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        console.log({
+        if (!email.trim() || !password.trim()) {
+            setError("이메일과 비밀번호를 모두 입력해주세요.");
+            return;
+        }
+
+        if (getUsers().length === 0) {
+            setError("가입된 계정이 없습니다. 먼저 회원가입을 진행해주세요.");
+            return;
+        }
+
+        const loginResult = loginUser({
             email,
             password,
             rememberMe,
         });
+
+        if (!loginResult.success) {
+            setError(loginResult.message);
+            return;
+        }
+
+        setError("");
+        history.push(location.state?.redirectTo || "/mypage");
     };
 
     const handleBack = () => {
@@ -73,8 +95,10 @@ function Login() {
                             />
                             Remember Me
                         </label>
-                        <a href="/forgot-password">Forgot Password?</a>
+                        <Link to="/signup">Forgot Password?</Link>
                     </div>
+
+                    {error && <p className="auth-feedback auth-feedback--error">{error}</p>}
 
                     <SubmitButton className="auth-login-button" text="Login" />
                     <button className="auth-back-button" type="button" onClick={handleBack}>Back</button>
@@ -90,9 +114,9 @@ function Login() {
             <footer className="auth-footer">
                 <p>© 2024 BracketMaster Pro. All rights reserved.</p>
                 <nav aria-label="Legal links">
-                    <a href="/privacy">Privacy Policy</a>
-                    <a href="/terms">Terms of Service</a>
-                    <a href="/support">Contact Support</a>
+                    <Link to="/">Privacy Policy</Link>
+                    <Link to="/">Terms of Service</Link>
+                    <Link to="/competitions">Contact Support</Link>
                 </nav>
             </footer>
         </main>

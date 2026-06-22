@@ -16,7 +16,7 @@ function Router() {
                 <LandingPage />
             </Route>
 
-            <Route exact path="/bracket">
+            <Route exact path={["/bracket", "/bracket/:competitionId", "/brackets"]}>
                 <BracketPage />
             </Route>
 
@@ -24,7 +24,7 @@ function Router() {
                 <CompetitionCreate />
             </Route>
 
-            <Route exact path={["/rally", "/competitions"]}>
+            <Route exact path={["/rally", "/competitions", "/tournaments"]}>
                 <RallyListPage />
             </Route>
 

@@ -146,6 +146,16 @@
     text-decoration: underline;
 }
 
+.auth-feedback {
+    margin: -2px 0 12px;
+    font-size: 9px;
+    line-height: 1.4;
+}
+
+.auth-feedback--error {
+    color: #b91c1c;
+}
+
 .auth-login-button,
 .auth-back-button {
     width: 100%;

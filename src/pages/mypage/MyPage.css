@@ -56,18 +56,25 @@
 }
 
 .mypage-side-nav a,
-.mypage-side-footer a {
+.mypage-side-footer a,
+.mypage-side-button {
     display: inline-flex;
     align-items: center;
     gap: 12px;
     color: #111827;
     font-size: clamp(12px, 1.15vw, 13px);
     font-weight: 600;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
     letter-spacing: 0;
 }
 
 .mypage-side-nav a:hover,
-.mypage-side-footer a:hover {
+.mypage-side-footer a:hover,
+.mypage-side-button:hover {
     color: #374151;
 }
 
@@ -86,6 +93,11 @@
     display: flex;
     flex-direction: column;
     background: #ffffff;
+}
+
+.mypage-main--centered {
+    align-items: center;
+    justify-content: center;
 }
 
 .mypage-topbar {
@@ -154,6 +166,47 @@
 .mypage-content {
     width: min(100% - clamp(32px, 7vw, 72px), 680px);
     margin: clamp(40px, 6vw, 66px) auto clamp(56px, 8vw, 82px);
+}
+
+.mypage-auth-card {
+    padding: 36px;
+    text-align: center;
+}
+
+.mypage-auth-card h1 {
+    margin: 0;
+    color: #111827;
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.mypage-auth-card p {
+    margin: 14px 0 0;
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.mypage-auth-actions {
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.mypage-auth-secondary {
+    min-width: 94px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #d1d5db;
+    border-radius: 5px;
+    color: #111827;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
 }
 
 .mypage-profile-header {
@@ -232,6 +285,9 @@
     height: 36px;
     border: 0;
     border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     background: #000000;
     color: #ffffff;
     font-size: 12px;
@@ -347,6 +403,23 @@
     border-top: 1px solid #d1d5db;
 }
 
+.mypage-status-summary {
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    color: #374151;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.mypage-status-summary strong {
+    color: #111827;
+    font-size: 20px;
+    font-weight: 800;
+}
+
 .mypage-progress-label {
     display: flex;
     align-items: center;
@@ -434,6 +507,87 @@
     line-height: 1.55;
 }
 
+.mypage-competition-list {
+    margin-top: 28px;
+    display: grid;
+    gap: 14px;
+}
+
+.mypage-competition-item {
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #f9fafb;
+}
+
+.mypage-competition-copy h3 {
+    margin: 10px 0 0;
+    color: #111827;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.mypage-competition-copy p {
+    margin: 8px 0 0;
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.mypage-competition-meta {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+    gap: 10px;
+    text-align: right;
+}
+
+.mypage-competition-meta strong {
+    color: #111827;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.mypage-competition-meta a {
+    color: #111827;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.mypage-competition-meta a:hover {
+    text-decoration: underline;
+}
+
+.mypage-competition-badge {
+    min-width: 62px;
+    padding: 6px 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.mypage-competition-badge.active {
+    background: #111827;
+    color: #ffffff;
+}
+
+.mypage-competition-badge.recruiting {
+    background: #eef2f7;
+    color: #64748b;
+    border: 1px solid #cbd5e1;
+}
+
+.mypage-competition-badge.ended {
+    background: #eeeeef;
+    color: #70757d;
+}
+
 .mypage-footer {
     min-height: 46px;
     margin-top: auto;
@@ -517,6 +671,17 @@
 
     .mypage-brand {
         padding: 0;
+    }
+
+    .mypage-competition-item {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .mypage-competition-meta {
+        width: 100%;
+        align-items: flex-start;
+        text-align: left;
     }
 
     .mypage-side-nav {
