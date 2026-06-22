@@ -1,5 +1,5 @@
 import "./MyPage.css";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
     formatDateLabel,
     getCompetitions,
@@ -17,7 +17,13 @@ function Icon({ name }) {
             <path d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7ZM6 6v3h3V6H6Zm9 0v3h3V6h-3ZM6 15v3h3v-3H6Zm9 0v3h3v-3h-3Z" />
         ),
         trophy: (
-            <path d="M8 4h8v3h4v2a6 6 0 0 1-5.2 5.9A4 4 0 0 1 13 16.9V19h3v2H8v-2h3v-2.1a4 4 0 0 1-1.8-2A6 6 0 0 1 4 9V7h4V4Zm8 5V6h-6v6.5a3 3 0 0 0 6 0V9Zm2 0v3.7A4 4 0 0 0 20 9h-2ZM6 9a4 4 0 0 0 2 3.7V9H6Z" />
+            <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
+                <path d="M8 4h8v7a4 4 0 0 1-8 0V4Z" />
+                <path d="M6 7H4v2a5 5 0 0 0 4 4.9" />
+                <path d="M18 7h2v2a5 5 0 0 1-4 4.9" />
+                <path d="M12 15v4" />
+                <path d="M8 20h8" />
+            </g>
         ),
         users: (
             <path d="M9 5a4 4 0 1 1 0 8 4 4 0 0 1 0-8Zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm7-1a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2ZM3 20a6 6 0 0 1 12 0H3Zm2.2-2h7.6a4 4 0 0 0-7.6 0ZM15 14a5 5 0 0 1 5 5h-2a3 3 0 0 0-3-3v-2Z" />
@@ -37,9 +43,6 @@ function Icon({ name }) {
         settings: (
             <path d="M19.4 13.5a7.3 7.3 0 0 0 0-3l2-1.5-2-3.4-2.4 1a7.4 7.4 0 0 0-2.6-1.5L14 2.5h-4l-.4 2.6A7.4 7.4 0 0 0 7 6.6l-2.4-1-2 3.4 2 1.5a7.3 7.3 0 0 0 0 3l-2 1.5 2 3.4 2.4-1a7.4 7.4 0 0 0 2.6 1.5l.4 2.6h4l.4-2.6a7.4 7.4 0 0 0 2.6-1.5l2.4 1 2-3.4-2-1.5ZM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6Z" />
         ),
-        camera: (
-            <path d="M9 4h6l1.3 2H20v14H4V6h3.7L9 4Zm3 5a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z" />
-        ),
         card: (
             <path d="M4 5h16v14H4V5Zm2 3v2h12V8H6Zm0 5v4h12v-4H6Zm2 1h3v2H8v-2Z" />
         ),
@@ -56,7 +59,6 @@ function Icon({ name }) {
 }
 
 function MyPage() {
-    const history = useHistory();
     const currentUser = getCurrentUser();
     const profile = getProfile();
     const competitions = getCompetitions();
@@ -72,22 +74,22 @@ function MyPage() {
         ? 0
         : Math.round((completedCount / competitions.length) * 100);
     const sidebarItems = [
-        { label: "Dashboard", icon: "dashboard", to: "/mypage" },
-        { label: "My Tournaments", icon: "trophy", to: "/competitions" },
-        { label: "Create Tournament", icon: "users", to: "/competitions/new" },
-        { label: "Bracket", icon: "chart", to: bracketLink },
+        { label: "대시보드", icon: "dashboard", to: "/mypage" },
+        { label: "내 대회", icon: "trophy", to: "/competitions" },
+        { label: "대회 만들기", icon: "users", to: "/competitions/new" },
+        { label: "대진표", icon: "chart", to: bracketLink },
     ];
     const latestCompetitions = competitions.slice(0, 3);
     const initial = (profile.name || currentUser?.name || "?").slice(0, 1).toUpperCase();
 
     const handleLogout = () => {
         logoutUser();
-        history.push("/");
+        window.location.assign("/");
     };
 
     if (!currentUser) {
         return (
-            <div className="mypage-shell">
+            <div className="mypage-shell mypage-shell--auth">
                 <div className="mypage-main mypage-main--centered">
                     <main className="mypage-content">
                         <section className="mypage-card mypage-auth-card">
@@ -113,11 +115,11 @@ function MyPage() {
         <div className="mypage-shell">
             <aside className="mypage-sidebar">
                 <div className="mypage-brand">
-                    <strong>BracketMaster</strong>
-                    <span>Local Dashboard</span>
+                    <strong>배민</strong>
+                    <span>관리 화면</span>
                 </div>
 
-                <nav className="mypage-side-nav" aria-label="Dashboard navigation">
+                <nav className="mypage-side-nav" aria-label="대시보드 메뉴">
                     {sidebarItems.map((item) => (
                         <Link to={item.to} key={item.label}>
                             <Icon name={item.icon} />
@@ -129,18 +131,18 @@ function MyPage() {
                 <div className="mypage-side-footer">
                     <Link to="/">
                         <Icon name="support" />
-                        <span>Landing</span>
+                        <span>홈</span>
                     </Link>
                     <button type="button" className="mypage-side-button" onClick={handleLogout}>
                         <Icon name="logout" />
-                        <span>Logout</span>
+                        <span>로그아웃</span>
                     </button>
                 </div>
             </aside>
 
             <div className="mypage-main">
                 <header className="mypage-topbar">
-                    <nav aria-label="Main navigation">
+                    <nav aria-label="주요 메뉴">
                         <Link to="/competitions">대회 목록</Link>
                         <Link to={bracketLink}>대진표</Link>
                         <Link to="/competitions/new">대회 생성</Link>
@@ -148,15 +150,20 @@ function MyPage() {
                     </nav>
 
                     <div className="mypage-top-actions">
-                        <button type="button" aria-label="Notifications">
+                        <button type="button" aria-label="알림">
                             <Icon name="bell" />
                         </button>
-                        <button type="button" aria-label="Settings">
+                        <button type="button" aria-label="설정">
                             <Icon name="settings" />
                         </button>
-                        <div className="mypage-mini-avatar" aria-label="User profile">
+                        <Link
+                            className="mypage-mini-avatar"
+                            to="/mypage"
+                            aria-label="마이페이지로 이동"
+                            title="마이페이지"
+                        >
                             <span>{initial}</span>
-                        </div>
+                        </Link>
                     </div>
                 </header>
 
@@ -165,9 +172,6 @@ function MyPage() {
                         <div className="mypage-profile-main">
                             <div className="mypage-avatar">
                                 <span>{initial}</span>
-                                <button type="button" aria-label="Change profile photo">
-                                    <Icon name="camera" />
-                                </button>
                             </div>
 
                             <div>
@@ -194,14 +198,6 @@ function MyPage() {
                                 <div>
                                     <dt>학번</dt>
                                     <dd>{profile.studentId}</dd>
-                                </div>
-                                <div>
-                                    <dt>연락처</dt>
-                                    <dd>{profile.phone}</dd>
-                                </div>
-                                <div>
-                                    <dt>성별</dt>
-                                    <dd>{profile.gender}</dd>
                                 </div>
                             </dl>
                         </article>
@@ -233,7 +229,7 @@ function MyPage() {
                     <section className="mypage-card mypage-tournament-card">
                         <div className="mypage-card-header">
                             <h2>최근 대회</h2>
-                            <span className="mypage-pill">{competitions.length} TOTAL</span>
+                            <span className="mypage-pill">총 {competitions.length}개</span>
                         </div>
 
                         {latestCompetitions.length === 0 ? (
@@ -279,8 +275,8 @@ function MyPage() {
                 </main>
 
                 <footer className="mypage-footer">
-                    <p><strong>BracketMaster</strong> 로컬 데이터 기반으로 연결된 대회 관리 화면입니다.</p>
-                    <nav aria-label="Quick links">
+                    <p><strong>배민</strong> 로컬 데이터 기반으로 연결된 대회 관리 화면입니다.</p>
+                    <nav aria-label="빠른 링크">
                         <Link to="/">홈</Link>
                         <Link to="/competitions">대회 목록</Link>
                         <Link to="/competitions/new">대회 생성</Link>

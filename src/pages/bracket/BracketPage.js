@@ -225,6 +225,7 @@ function BracketPage() {
     const [matchType, setMatchType] = useState(competition?.savedMatchType || competition?.type || "league");
     const [participants, setParticipants] = useState(savedParticipants);
     const [winners, setWinners] = useState(savedWinners);
+    const [isMatchTypeLocked, setIsMatchTypeLocked] = useState(Boolean(competition?.isMatchTypeLocked));
 
     useEffect(() => {
         if (competition?.id) {
@@ -234,6 +235,7 @@ function BracketPage() {
         setMatchType(competition?.savedMatchType || competition?.type || "league");
         setParticipants(savedParticipants);
         setWinners(savedWinners);
+        setIsMatchTypeLocked(Boolean(competition?.isMatchTypeLocked));
     }, [competition, savedParticipants, savedWinners]);
 
     const tournamentBracket = useMemo(() => makeTournamentBracket(participants), [participants]);
@@ -258,7 +260,12 @@ function BracketPage() {
     }, [tournamentBracket]);
     const tournamentWinners = { ...automaticByeWinners, ...winners };
 
-    const saveBracketState = (nextParticipants, nextWinners, nextMatchType = matchType) => {
+    const saveBracketState = (
+        nextParticipants,
+        nextWinners,
+        nextMatchType = matchType,
+        nextIsMatchTypeLocked = isMatchTypeLocked
+    ) => {
         if (!competition?.id) {
             return;
         }
@@ -267,12 +274,19 @@ function BracketPage() {
             participants: nextParticipants,
             winners: nextWinners,
             matchType: nextMatchType,
+            isMatchTypeLocked: nextIsMatchTypeLocked,
         });
     };
 
     const handleMatchTypeChange = (nextMatchType) => {
+        if (isMatchTypeLocked) {
+            return;
+        }
+
         setMatchType(nextMatchType);
-        saveBracketState(participants, winners, nextMatchType);
+        setWinners({});
+        setIsMatchTypeLocked(true);
+        saveBracketState(participants, {}, nextMatchType, true);
     };
 
     const handleWinnersChange = (nextWinnersOrUpdater) => {
@@ -281,7 +295,7 @@ function BracketPage() {
                 ? nextWinnersOrUpdater(currentWinners)
                 : nextWinnersOrUpdater;
 
-            saveBracketState(participants, nextWinners, matchType);
+            saveBracketState(participants, nextWinners, matchType, isMatchTypeLocked);
 
             return nextWinners;
         });
@@ -292,13 +306,13 @@ function BracketPage() {
 
         setParticipants(shuffledParticipants);
         setWinners({});
-        saveBracketState(shuffledParticipants, {}, matchType);
+        saveBracketState(shuffledParticipants, {}, matchType, isMatchTypeLocked);
     };
 
     return (
         <main className="bracket-page">
             <section className="bracket-hero">
-                <p className="eyebrow">BracketMaster</p>
+                <p className="eyebrow">배민</p>
                 <h1>{competition ? `${competition.title} 대진표` : "대진표 생성"}</h1>
                 <p>
                     {competition?.description || "참가 신청이 끝난 뒤 참가자 리스트를 랜덤으로 섞어서 리그전 또는 토너먼트 대진표로 보여주는 페이지입니다."}
@@ -308,7 +322,7 @@ function BracketPage() {
             <section className="bracket-panel">
                 <div className="panel-header">
                     <div className="panel-header-copy">
-                        <p className="eyebrow">Tournament</p>
+                        <p className="eyebrow">대회</p>
                         <h2>{competition?.title || "웹프로그래밍 수행평가 대회"}</h2>
                         <p>{competition ? "대회 목록에서 선택한 데이터를 그대로 불러왔습니다." : "선택된 대회가 없어서 기본 샘플 데이터를 보여주고 있습니다."}</p>
                     </div>
@@ -320,6 +334,8 @@ function BracketPage() {
                         <button
                             className={matchType === "league" ? "mode-button active" : "mode-button"}
                             onClick={() => handleMatchTypeChange("league")}
+                            disabled={isMatchTypeLocked}
+                            title={isMatchTypeLocked ? "진행 방식이 이미 확정되었습니다." : "리그전으로 확정"}
                             type="button"
                         >
                             리그
@@ -327,10 +343,15 @@ function BracketPage() {
                         <button
                             className={matchType === "tournament" ? "mode-button active" : "mode-button"}
                             onClick={() => handleMatchTypeChange("tournament")}
+                            disabled={isMatchTypeLocked}
+                            title={isMatchTypeLocked ? "진행 방식이 이미 확정되었습니다." : "토너먼트로 확정"}
                             type="button"
                         >
                             토너먼트
                         </button>
+                        {isMatchTypeLocked && (
+                            <span className="mode-lock-hint">진행 방식 확정됨</span>
+                        )}
                         {hasEnoughParticipants && (
                             <button className="shuffle-button" onClick={onShuffle} type="button">
                                 랜덤 섞기
@@ -387,7 +408,7 @@ function LeagueTable({ participants }) {
             <section className="league-card">
                 <div className="league-schedule-header">
                     <div className="section-title">
-                        <p className="eyebrow">League</p>
+                        <p className="eyebrow">리그</p>
                         <h3>리그전 일정표</h3>
                     </div>
 
@@ -423,7 +444,7 @@ function LeagueTable({ participants }) {
                             <span className="league-round-card__index">{index + 1}경기</span>
                             <div className="league-round-card__teams">
                                 <ParticipantCard participant={match.home} />
-                                <span className="league-round-card__vs">VS</span>
+                                <span className="league-round-card__vs">대</span>
                                 <ParticipantCard participant={match.away} />
                             </div>
                         </article>
@@ -436,7 +457,7 @@ function LeagueTable({ participants }) {
     return (
         <section className="league-card">
             <div className="section-title">
-                <p className="eyebrow">League</p>
+                <p className="eyebrow">리그</p>
                 <h3>리그전 대진표</h3>
             </div>
 
@@ -468,7 +489,7 @@ function LeagueTable({ participants }) {
                                 }
                                 key={`${rowParticipant.id}-${columnParticipant.id}`}
                             >
-                                {rowIndex === columnIndex ? "" : "VS"}
+                                {rowIndex === columnIndex ? "" : "대"}
                             </div>
                         ))}
                     </Fragment>
@@ -634,7 +655,7 @@ function TournamentBracket({ bracket, winners, setWinners }) {
     return (
         <section className="tournament-card">
             <div className="section-title">
-                <p className="eyebrow">Tournament</p>
+                <p className="eyebrow">토너먼트</p>
                 <h3>토너먼트 대진표</h3>
             </div>
 

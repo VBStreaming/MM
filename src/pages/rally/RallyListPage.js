@@ -39,7 +39,7 @@ function Icon({ name }) {
 }
 
 function getTypeLabel(type) {
-    return type === "tournament" ? "TOURNAMENT" : "LEAGUE";
+    return type === "tournament" ? "토너먼트" : "리그";
 }
 
 function RallyListPage() {

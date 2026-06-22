@@ -1,9 +1,9 @@
 const STORAGE_KEYS = {
-    competitions: "bucket-master-competitions",
-    profile: "bucket-master-profile",
-    users: "bucket-master-users",
-    currentUser: "bucket-master-current-user",
-    selectedCompetitionId: "bucket-master-selected-competition-id",
+    competitions: "baemin-competitions",
+    profile: "baemin-profile",
+    users: "baemin-users",
+    currentUser: "baemin-current-user",
+    selectedCompetitionId: "baemin-selected-competition-id",
 };
 
 const DEFAULT_PROFILE = {
@@ -11,7 +11,7 @@ const DEFAULT_PROFILE = {
     studentId: "2412",
     phone: "010-1234-5678",
     gender: "여성",
-    role: "Tournament Coordinator",
+    role: "대회 관리자",
 };
 
 const DEMO_USERS = [
@@ -23,7 +23,7 @@ const DEMO_USERS = [
         password: "1234",
         phone: "010-0000-0000",
         gender: "미설정",
-        role: "Participant",
+        role: "참가자",
         createdAt: "2026-06-22T09:00:00.000Z",
     },
     {
@@ -34,7 +34,7 @@ const DEMO_USERS = [
         password: "1234",
         phone: "010-1111-1111",
         gender: "남성",
-        role: "Participant",
+        role: "참가자",
         createdAt: "2026-06-22T09:05:00.000Z",
     },
     {
@@ -45,7 +45,7 @@ const DEMO_USERS = [
         password: "1234",
         phone: "010-2222-2222",
         gender: "여성",
-        role: "Participant",
+        role: "참가자",
         createdAt: "2026-06-22T09:10:00.000Z",
     },
     {
@@ -56,39 +56,39 @@ const DEMO_USERS = [
         password: "1234",
         phone: "010-3333-3333",
         gender: "남성",
-        role: "Participant",
+        role: "참가자",
         createdAt: "2026-06-22T09:15:00.000Z",
     },
 ];
 
 const TEAM_PREFIXES = [
-    "Blue",
-    "Red",
-    "Green",
-    "White",
-    "Black",
-    "Gold",
-    "Silver",
-    "Orange",
-    "Violet",
-    "Crimson",
-    "Sky",
-    "Ocean",
-    "Rapid",
-    "Dream",
-    "Nova",
-    "Peak",
+    "푸른",
+    "붉은",
+    "초록",
+    "하얀",
+    "검은",
+    "금빛",
+    "은빛",
+    "주황",
+    "보라",
+    "진홍",
+    "하늘",
+    "바다",
+    "빠른",
+    "꿈",
+    "새별",
+    "정상",
 ];
 
 const TEAM_SUFFIXES = [
-    "Tigers",
-    "Hawks",
-    "Storm",
-    "Wolves",
-    "Stars",
-    "Raiders",
-    "Pulse",
-    "Phoenix",
+    "호랑이",
+    "매",
+    "폭풍",
+    "늑대",
+    "별",
+    "돌격대",
+    "맥박",
+    "불사조",
 ];
 
 const PLAYER_NAMES = [
@@ -238,6 +238,7 @@ function isLegacyAutoFilledCompetition(rawCompetition, participants, safeCapacit
 
 function normalizeCompetition(rawCompetition, index = 0) {
     const safeCapacity = Math.max(4, toNumber(rawCompetition?.maxParticipants, 4));
+    const competitionType = rawCompetition?.type === "tournament" ? "tournament" : "league";
     const storedParticipants = Array.isArray(rawCompetition?.participants)
         ? rawCompetition.participants.filter(Boolean)
         : [];
@@ -254,19 +255,13 @@ function normalizeCompetition(rawCompetition, index = 0) {
     const bracketParticipants = hasSameParticipantSet(participants, storedBracketParticipants)
         ? storedBracketParticipants
         : participants;
-    const savedMatchType = rawCompetition?.savedMatchType === "tournament"
-        ? "tournament"
-        : rawCompetition?.savedMatchType === "league"
-            ? "league"
-            : rawCompetition?.type === "tournament"
-                ? "tournament"
-                : "league";
+    const savedMatchType = competitionType;
     const bracketWinners = normalizeWinnerMap(rawCompetition?.bracketWinners, bracketParticipants);
 
     return {
         id: rawCompetition?.id || `competition-${index + 1}`,
         title: rawCompetition?.title || "새 대회",
-        type: rawCompetition?.type === "tournament" ? "tournament" : "league",
+        type: competitionType,
         maxParticipants: safeCapacity,
         startDate: rawCompetition?.startDate || "2026-07-01",
         endDate: rawCompetition?.endDate || "2026-07-03",
@@ -278,6 +273,7 @@ function normalizeCompetition(rawCompetition, index = 0) {
         bracketParticipants,
         bracketWinners,
         savedMatchType,
+        isMatchTypeLocked: true,
         isSeed: Boolean(rawCompetition?.isSeed),
     };
 }
@@ -286,7 +282,7 @@ function createSeedCompetitions() {
     return [
         normalizeCompetition({
             id: "competition-seed-1",
-            title: "2026 Summer League",
+            title: "2026 여름 리그",
             type: "league",
             maxParticipants: 8,
             startDate: "2026-06-25",
@@ -298,7 +294,7 @@ function createSeedCompetitions() {
         }),
         normalizeCompetition({
             id: "competition-seed-2",
-            title: "Campus Tournament Cup",
+            title: "교내 토너먼트 컵",
             type: "tournament",
             maxParticipants: 16,
             startDate: "2026-06-18",
@@ -310,7 +306,7 @@ function createSeedCompetitions() {
         }),
         normalizeCompetition({
             id: "competition-seed-3",
-            title: "Winter Championship",
+            title: "겨울 챔피언십",
             type: "tournament",
             maxParticipants: 8,
             startDate: "2026-05-12",
@@ -370,7 +366,7 @@ function normalizeUser(rawUser, index = 0) {
         password: rawUser?.password || "",
         phone: rawUser?.phone || "",
         gender: rawUser?.gender || "",
-        role: rawUser?.role || "Participant",
+        role: rawUser?.role || "참가자",
         createdAt: rawUser?.createdAt || new Date().toISOString(),
     };
 }
@@ -489,6 +485,8 @@ export function saveCompetition(form) {
         participants: [],
         createdById: form.createdById,
         createdByName: form.createdByName,
+        savedMatchType: form.type,
+        isMatchTypeLocked: true,
     });
     const nextCompetitions = [competition, ...getCompetitions()];
 
@@ -512,7 +510,8 @@ export function saveCompetitionBracketState(competitionId, bracketState) {
                 ? bracketState.participants
                 : competition.bracketParticipants,
             bracketWinners: bracketState?.winners,
-            savedMatchType: bracketState?.matchType,
+            savedMatchType: competition.type,
+            isMatchTypeLocked: true,
         });
 
         return savedCompetition;
@@ -576,7 +575,7 @@ export function registerUser(userForm) {
         studentId: normalizedStudentId,
         email: normalizedEmail,
         password: userForm.password,
-        role: "Participant",
+        role: "참가자",
         createdAt: new Date().toISOString(),
     });
     const nextUsers = [nextUser, ...users];
@@ -667,6 +666,7 @@ export function applyToCompetition(competitionId, currentUser) {
         bracketParticipants: [...targetCompetition.participants, nextParticipant],
         bracketWinners: {},
         savedMatchType: targetCompetition.type,
+        isMatchTypeLocked: true,
     };
     const nextCompetitions = competitions.map((competition) =>
         competition.id === competitionId ? nextCompetition : competition

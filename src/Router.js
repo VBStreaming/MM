@@ -1,13 +1,21 @@
 import { Switch, Route } from "react-router-dom";
 import Body from "./components/Body";
+import DashboardLayout from "./components/DashboardLayout";
 import LandingPage from "./pages/landing/LandingPage";
 import Login from "./pages/login/Login";
 import Signup from "./pages/signup/Signup";
-import Header from "./components/Header";
 import MyPage from "./pages/mypage/MyPage";
 import BracketPage from "./pages/bracket/BracketPage";
 import CompetitionCreate from "./pages/competition-create/CompetitionCreate";
 import RallyListPage from "./pages/rally/RallyListPage";
+
+function DashboardPage({ children }) {
+    return (
+        <DashboardLayout>
+            {children}
+        </DashboardLayout>
+    );
+}
 
 function Router() {
     return (
@@ -17,27 +25,33 @@ function Router() {
             </Route>
 
             <Route exact path={["/bracket", "/bracket/:competitionId", "/brackets"]}>
-                <BracketPage />
+                <DashboardPage>
+                    <BracketPage />
+                </DashboardPage>
             </Route>
 
             <Route exact path="/competitions/new">
-                <CompetitionCreate />
+                <DashboardPage>
+                    <CompetitionCreate />
+                </DashboardPage>
             </Route>
 
             <Route exact path={["/rally", "/competitions", "/tournaments"]}>
-                <RallyListPage />
+                <DashboardPage>
+                    <RallyListPage />
+                </DashboardPage>
             </Route>
 
             <Route exact path="/body">
-                <Body />
+                <DashboardPage>
+                    <Body />
+                </DashboardPage>
             </Route>
 
             <Route exact path="/login">
-                <Header />
                 <Login />
             </Route>
             <Route exact path="/signup">
-                <Header />
                 <Signup />
             </Route>
             <Route exact path="/mypage">

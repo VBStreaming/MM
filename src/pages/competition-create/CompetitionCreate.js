@@ -95,7 +95,7 @@ function CompetitionCreate() {
                                     onClick={() => updateField("type", "league")}
                                     aria-pressed={form.type === "league"}
                                 >
-                                    리그 (League)
+                                    리그
                                 </button>
                                 <button
                                     type="button"
@@ -103,9 +103,12 @@ function CompetitionCreate() {
                                     onClick={() => updateField("type", "tournament")}
                                     aria-pressed={form.type === "tournament"}
                                 >
-                                    토너먼트 (Tournament)
+                                    토너먼트
                                 </button>
                             </div>
+                            <p className="competition-type-note">
+                                대회 생성 후 진행 방식은 확정되어 대진표에서 변경할 수 없습니다.
+                            </p>
                         </fieldset>
 
                         <label className="competition-field" htmlFor="maxParticipants">

@@ -7,7 +7,7 @@ function TopBar() {
 
     const handleLogout = () => {
         logoutUser();
-        history.push("/");
+        window.location.assign("/");
     };
 
     return (
@@ -19,7 +19,7 @@ function TopBar() {
                         type="button"
                         onClick={() => history.push("/")}
                     >
-                        Bucket Master
+                        배민
                     </button>
 
                     <div className="top-bar__actions">

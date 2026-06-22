@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
+import AuthTopBar from "../../components/AuthTopBar";
 import InputButton from "../../components/login/input-button/InputButton";
 import SubmitButton from "../../components/login/input-button/SubmitButton";
 import { loginUser } from "../../utils/authStorage";
@@ -8,6 +9,8 @@ import "./Login.css";
 function Login() {
     const history = useHistory();
     const location = useLocation();
+    const identifierRef = useRef(null);
+    const passwordRef = useRef(null);
     const [identifier, setIdentifier] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
@@ -17,8 +20,15 @@ function Login() {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        if (!canSubmit) {
-            setError("이메일 또는 학번과 비밀번호를 모두 입력해주세요.");
+        if (!identifier.trim()) {
+            setError("이메일 또는 학번을 입력해주세요.");
+            identifierRef.current?.focus();
+            return;
+        }
+
+        if (!password.trim()) {
+            setError("비밀번호를 입력해주세요.");
+            passwordRef.current?.focus();
             return;
         }
 
@@ -42,29 +52,38 @@ function Login() {
 
     return (
         <main className="auth-page">
+            <AuthTopBar mode="login" />
+
             <section className="auth-card">
                 <div className="auth-icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" role="img">
-                        <path d="M8 4h8v3h4v2a6 6 0 0 1-5.2 5.9A4 4 0 0 1 13 16.9V19h3v2H8v-2h3v-2.1a4 4 0 0 1-1.8-2A6 6 0 0 1 4 9V7h4V4Zm8 5V6h-6v6.5a3 3 0 0 0 6 0V9Zm2 0v3.7A4 4 0 0 0 20 9h-2ZM6 9a4 4 0 0 0 2 3.7V9H6Z" />
+                        <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
+                            <path d="M8 4h8v7a4 4 0 0 1-8 0V4Z" />
+                            <path d="M6 7H4v2a5 5 0 0 0 4 4.9" />
+                            <path d="M18 7h2v2a5 5 0 0 1-4 4.9" />
+                            <path d="M12 15v4" />
+                            <path d="M8 20h8" />
+                        </g>
                     </svg>
                 </div>
 
-                <h1>Welcome back</h1>
-                <p className="auth-description">Sign in to manage your tournaments</p>
+                <h1>다시 오신 걸 환영합니다</h1>
+                <p className="auth-description">대회 관리를 위해 로그인하세요</p>
 
                 <form className="auth-form" onSubmit={handleSubmit}>
                     <div className="auth-field">
-                        <label className="auth-label" htmlFor="identifier">Email or Student ID</label>
+                        <label className="auth-label" htmlFor="identifier">이메일 또는 학번</label>
                         <div className="auth-input-wrap">
                             <svg className="auth-input-icon" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M4 6h16v12H4V6Zm2 2v.2l6 4.2 6-4.2V8H6Zm12 8v-5.4l-6 4.2-6-4.2V16h12Z" />
                             </svg>
                             <InputButton
                                 id="identifier"
+                                ref={identifierRef}
                                 type="text"
                                 value={identifier}
                                 onChange={(event) => setIdentifier(event.target.value)}
-                                placeholder="name@example.com or 2416"
+                                placeholder="email@example.com 또는 2416"
                                 autoComplete="username"
                                 required
                             />
@@ -72,17 +91,18 @@ function Login() {
                     </div>
 
                     <div className="auth-field">
-                        <label className="auth-label" htmlFor="password">Password</label>
+                        <label className="auth-label" htmlFor="password">비밀번호</label>
                         <div className="auth-input-wrap">
                             <svg className="auth-input-icon" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M7 10V8a5 5 0 0 1 10 0v2h2v10H5V10h2Zm2 0h6V8a3 3 0 0 0-6 0v2Zm-2 8h10v-6H7v6Z" />
                             </svg>
                             <InputButton
                                 id="password"
+                                ref={passwordRef}
                                 type="password"
                                 value={password}
                                 onChange={(event) => setPassword(event.target.value)}
-                                placeholder="password"
+                                placeholder="비밀번호"
                                 autoComplete="current-password"
                                 required
                             />
@@ -96,32 +116,32 @@ function Login() {
                                 checked={rememberMe}
                                 onChange={(event) => setRememberMe(event.target.checked)}
                             />
-                            Remember Me
+                            로그인 상태 기억
                         </label>
-                        <Link to="/signup">Forgot Password?</Link>
+                        <Link to="/signup">비밀번호를 잊으셨나요?</Link>
                     </div>
 
                     {error && <p className="auth-error">{error}</p>}
 
                     <div className="auth-actions">
-                        <SubmitButton className="auth-login-button" text="Login" disabled={!canSubmit} />
-                        <button className="auth-back-button" type="button" onClick={handleBack}>Back</button>
+                        <SubmitButton className="auth-login-button" text="로그인" disabled={!canSubmit} />
+                        <button className="auth-back-button" type="button" onClick={handleBack}>뒤로 가기</button>
                     </div>
                 </form>
 
                 <p className="auth-signup">
-                    Don't have an account? <Link to="/signup">Create an account</Link>
+                    계정이 없으신가요? <Link to="/signup">회원가입하기</Link>
                 </p>
             </section>
 
-            <p className="auth-security">Secure, encrypted login powered by BracketMaster Pro</p>
+            <p className="auth-security">배민에서 안전하게 대회를 관리하세요</p>
 
             <footer className="auth-footer">
-                <p>© 2026 BracketMaster Pro. All rights reserved.</p>
-                <nav aria-label="Legal links">
-                    <Link to="/">Privacy Policy</Link>
-                    <Link to="/">Terms of Service</Link>
-                    <Link to="/competitions">Contact Support</Link>
+                <p>© 2026 배민. 모든 권리 보유.</p>
+                <nav aria-label="정책 링크">
+                    <Link to="/">개인정보 처리방침</Link>
+                    <Link to="/">이용 약관</Link>
+                    <Link to="/competitions">문의하기</Link>
                 </nav>
             </footer>
         </main>

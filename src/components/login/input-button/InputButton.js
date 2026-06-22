@@ -1,9 +1,10 @@
 import "./InputButton.css";
+import { forwardRef } from "react";
 
-function InputButton({ className = "", ...props }) {
+const InputButton = forwardRef(function InputButton({ className = "", ...props }, ref) {
     return (
-        <input {...props} className={["login-input", className].filter(Boolean).join(" ")} />
+        <input ref={ref} {...props} className={["login-input", className].filter(Boolean).join(" ")} />
     );
-}
+});
 
 export default InputButton;

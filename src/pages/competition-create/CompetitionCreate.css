@@ -133,6 +133,13 @@
     box-shadow: 0 1px 3px rgba(17, 24, 39, 0.12);
 }
 
+.competition-type-note {
+    margin: 6px 0 0;
+    color: #6b7280;
+    font-size: 11px;
+    line-height: 1.45;
+}
+
 .competition-create-error {
     grid-column: 1 / -1;
     margin: -12px 0 0;

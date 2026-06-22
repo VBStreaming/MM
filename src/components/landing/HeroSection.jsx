@@ -7,7 +7,7 @@ function HeroSection() {
     <section className="hero-section">
       <div className="content-container hero-layout">
         <div className="hero-text-area">
-          <div className="hero-badge">Bucket Master</div>
+          <div className="hero-badge">배민</div>
           <h1 className="hero-title">스포츠 대진표를 쉽게 관리하세요</h1>
           <p className="hero-description">
             대회 생성부터 선수 등록, 대진표 확인까지 한 번에 할 수 있습니다.
@@ -46,7 +46,7 @@ function HeroSection() {
           <div className="hero-preview-header">
             <div>
               <p className="preview-label">오늘의 대회</p>
-              <h2>2026 Summer League</h2>
+              <h2>2026 여름 리그</h2>
             </div>
             <span className="preview-status">진행 중</span>
           </div>

@@ -6,6 +6,11 @@
     color: #111827;
 }
 
+.mypage-shell--auth {
+    grid-template-columns: 1fr;
+    background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
+}
+
 .mypage-shell a {
     text-decoration: none;
 }
@@ -101,8 +106,15 @@
 }
 
 .mypage-main--centered {
+    grid-column: 1;
     align-items: center;
     justify-content: center;
+    padding: 32px 16px;
+}
+
+.mypage-main--centered .mypage-content {
+    width: min(100%, 520px);
+    margin: 0 auto;
 }
 
 .mypage-topbar {
@@ -167,11 +179,19 @@
     background: #111827;
     color: #ffffff;
     box-shadow: inset 0 0 0 2px #e5e7eb;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 .mypage-mini-avatar span {
     font-size: 12px;
     font-weight: 900;
+}
+
+.mypage-topbar .mypage-mini-avatar:hover,
+.mypage-topbar .mypage-mini-avatar:focus-visible {
+    text-decoration: none;
+    transform: translateY(-1px);
+    box-shadow: inset 0 0 0 2px #e5e7eb, 0 8px 18px rgba(17, 24, 39, 0.14);
 }
 
 .mypage-content {
@@ -180,30 +200,39 @@
 }
 
 .mypage-auth-card {
-    padding: 36px;
+    width: 100%;
+    padding: 44px;
     text-align: center;
 }
 
 .mypage-auth-card h1 {
     margin: 0;
     color: #111827;
-    font-size: 28px;
+    font-size: 32px;
+    line-height: 1.25;
     font-weight: 800;
 }
 
 .mypage-auth-card p {
     margin: 14px 0 0;
     color: #6b7280;
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.6;
 }
 
 .mypage-auth-actions {
     margin-top: 24px;
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: center;
     justify-content: center;
     gap: 12px;
+}
+
+.mypage-auth-actions .mypage-edit-button,
+.mypage-auth-actions .mypage-auth-secondary {
+    width: 100%;
+    min-width: 0;
 }
 
 .mypage-auth-secondary {
@@ -252,27 +281,6 @@
     color: rgba(255, 255, 255, 0.92);
     font-size: 28px;
     font-weight: 800;
-}
-
-.mypage-avatar button {
-    position: absolute;
-    right: 2px;
-    bottom: 8px;
-    width: 28px;
-    height: 28px;
-    padding: 0;
-    display: grid;
-    place-items: center;
-    border: 2px solid #ffffff;
-    border-radius: 50%;
-    background: #000000;
-    color: #ffffff;
-    cursor: pointer;
-}
-
-.mypage-avatar button svg {
-    width: 14px;
-    height: 14px;
 }
 
 .mypage-profile-main h1 {
@@ -802,15 +810,26 @@
         margin-bottom: 48px;
     }
 
+    .mypage-main--centered .mypage-content {
+        width: min(100%, 420px);
+        margin: 0 auto;
+    }
+
+    .mypage-auth-card {
+        padding: 32px 22px;
+    }
+
+    .mypage-auth-card h1 {
+        font-size: 28px;
+    }
+
+    .mypage-auth-actions {
+        grid-template-columns: 1fr;
+    }
+
     .mypage-avatar {
         width: 76px;
         height: 76px;
-    }
-
-    .mypage-avatar button {
-        width: 24px;
-        height: 24px;
-        bottom: 4px;
     }
 
     .mypage-profile-main h1 {

@@ -8,7 +8,7 @@ const showcaseSlides = [
     title: "대회 생성 화면",
     description:
       "대회 이름, 경기 방식, 참가 규모를 입력해서 새 대회를 빠르게 시작할 수 있습니다.",
-    tag: "Create",
+    tag: "생성",
     items: ["대회 이름 입력", "리그전 / 토너먼트 선택", "일정과 라운드 설정"],
   },
   {
@@ -16,7 +16,7 @@ const showcaseSlides = [
     title: "선수 등록 화면",
     description:
       "참가 선수와 팀을 한 번에 추가하고 목록을 정리해서 관리할 수 있습니다.",
-    tag: "Players",
+    tag: "참가자",
     items: ["선수 이름 등록", "팀별 참가자 구분", "시드 배정 확인"],
   },
   {
@@ -24,7 +24,7 @@ const showcaseSlides = [
     title: "대진표 관리 화면",
     description:
       "경기 결과를 누르기만 해도 승자와 점수가 바로 반영되는 흐름을 보여줍니다.",
-    tag: "Bracket",
+    tag: "대진표",
     items: ["승자 선택", "점수 수정", "다음 라운드 자동 반영"],
   },
 ];

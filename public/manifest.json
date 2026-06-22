@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "배민",
+  "name": "배민 대회 관리 서비스",
   "icons": [
     {
       "src": "favicon.ico",
