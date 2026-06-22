@@ -9,20 +9,20 @@ import "./Login.css";
 function Login() {
     const history = useHistory();
     const location = useLocation();
-    const identifierRef = useRef(null);
+    const emailRef = useRef(null);
     const passwordRef = useRef(null);
-    const [identifier, setIdentifier] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState("");
-    const canSubmit = identifier.trim().length > 0 && password.trim().length > 0;
+    const canSubmit = email.trim().length > 0 && password.trim().length > 0;
 
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        if (!identifier.trim()) {
-            setError("이메일 또는 학번을 입력해주세요.");
-            identifierRef.current?.focus();
+        if (!email.trim()) {
+            setError("이메일을 입력해주세요.");
+            emailRef.current?.focus();
             return;
         }
 
@@ -33,7 +33,7 @@ function Login() {
         }
 
         const result = loginUser({
-            identifier,
+            email,
             password,
         });
 
@@ -72,19 +72,19 @@ function Login() {
 
                 <form className="auth-form" onSubmit={handleSubmit}>
                     <div className="auth-field">
-                        <label className="auth-label" htmlFor="identifier">이메일 또는 학번</label>
+                        <label className="auth-label" htmlFor="email">이메일</label>
                         <div className="auth-input-wrap">
                             <svg className="auth-input-icon" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M4 6h16v12H4V6Zm2 2v.2l6 4.2 6-4.2V8H6Zm12 8v-5.4l-6 4.2-6-4.2V16h12Z" />
                             </svg>
                             <InputButton
-                                id="identifier"
-                                ref={identifierRef}
-                                type="text"
-                                value={identifier}
-                                onChange={(event) => setIdentifier(event.target.value)}
-                                placeholder="email@example.com 또는 2416"
-                                autoComplete="username"
+                                id="email"
+                                ref={emailRef}
+                                type="email"
+                                value={email}
+                                onChange={(event) => setEmail(event.target.value)}
+                                placeholder="email@example.com"
+                                autoComplete="email"
                                 required
                             />
                         </div>

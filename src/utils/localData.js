@@ -596,21 +596,18 @@ export function registerUser(userForm) {
     };
 }
 
-export function loginUser({ email, identifier, password }) {
+export function loginUser({ email, password }) {
     const users = getUsers();
-    const normalizedIdentifier = (identifier || email || "").trim().toLowerCase();
+    const normalizedEmail = (email || "").trim().toLowerCase();
     const matchedUser = users.find((user) =>
-        (
-            user.email.toLowerCase() === normalizedIdentifier
-            || user.studentId.toLowerCase() === normalizedIdentifier
-        )
+        user.email.toLowerCase() === normalizedEmail
         && user.password === password
     );
 
     if (!matchedUser) {
         return {
             success: false,
-            message: "이메일 또는 학번, 비밀번호를 다시 확인해주세요.",
+            message: "이메일과 비밀번호를 다시 확인해주세요.",
         };
     }
 

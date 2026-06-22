@@ -46,9 +46,8 @@ export function signupUser({ fullName, studentId, email, password }) {
     };
 }
 
-export function loginUser({ identifier, email, password }) {
+export function loginUser({ email, password }) {
     const result = loginLocalUser({
-        identifier: identifier || email,
         email,
         password,
     });
