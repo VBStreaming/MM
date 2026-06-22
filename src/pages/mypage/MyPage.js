@@ -1,26 +1,15 @@
 import "./MyPage.css";
 import { Link, useHistory } from "react-router-dom";
-import { getCurrentUser, getUserInitial, logoutUser } from "../../utils/authStorage";
-import { getCompetitionsByUser } from "../../utils/competitionStorage";
-
-const sidebarItems = [
-    {
-        label: "Dashboard",
-        icon: "dashboard",
-    },
-    {
-        label: "My Tournaments",
-        icon: "trophy",
-    },
-    {
-        label: "Participants",
-        icon: "users",
-    },
-    {
-        label: "Results",
-        icon: "chart",
-    },
-];
+import {
+    formatDateLabel,
+    getCompetitions,
+    getCompetitionStatusInfo,
+    getCurrentUser,
+    getProfile,
+    getSelectedCompetition,
+    logoutUser,
+    setSelectedCompetitionId,
+} from "../../utils/localData";
 
 function Icon({ name }) {
     const icons = {
@@ -69,40 +58,68 @@ function Icon({ name }) {
 function MyPage() {
     const history = useHistory();
     const currentUser = getCurrentUser();
-    const profile = currentUser || {
-        fullName: "Guest User",
-        studentId: "----",
-        email: "로그인 후 표시됩니다",
-        role: "로그인이 필요합니다",
-    };
-    const joinedDate = currentUser?.createdAt
-        ? new Date(currentUser.createdAt).toLocaleDateString("ko-KR")
-        : "-";
-    const initial = getUserInitial(currentUser);
-    const myCompetitions = getCompetitionsByUser(currentUser?.id);
+    const profile = getProfile();
+    const competitions = getCompetitions();
+    const selectedCompetition = getSelectedCompetition();
+    const bracketLink = selectedCompetition ? `/bracket/${selectedCompetition.id}` : "/bracket";
+    const completedCount = competitions.filter((competition) => (
+        getCompetitionStatusInfo(competition.startDate, competition.endDate).statusKey === "ended"
+    )).length;
+    const activeCount = competitions.filter((competition) => (
+        getCompetitionStatusInfo(competition.startDate, competition.endDate).statusKey !== "ended"
+    )).length;
+    const completionRate = competitions.length === 0
+        ? 0
+        : Math.round((completedCount / competitions.length) * 100);
+    const sidebarItems = [
+        { label: "Dashboard", icon: "dashboard", to: "/mypage" },
+        { label: "My Tournaments", icon: "trophy", to: "/competitions" },
+        { label: "Create Tournament", icon: "users", to: "/competitions/new" },
+        { label: "Bracket", icon: "chart", to: bracketLink },
+    ];
+    const latestCompetitions = competitions.slice(0, 3);
+    const initial = (profile.name || currentUser?.name || "?").slice(0, 1).toUpperCase();
 
     const handleLogout = () => {
         logoutUser();
-        history.push("/login");
+        history.push("/");
     };
 
-    const handleEditProfile = () => {
-        if (!currentUser) {
-            history.push("/login");
-        }
-    };
+    if (!currentUser) {
+        return (
+            <div className="mypage-shell">
+                <div className="mypage-main mypage-main--centered">
+                    <main className="mypage-content">
+                        <section className="mypage-card mypage-auth-card">
+                            <h1>로그인이 필요합니다.</h1>
+                            <p>마이페이지를 보려면 먼저 로그인하거나 회원가입을 진행해주세요.</p>
+                            <div className="mypage-auth-actions">
+                                <Link
+                                    className="mypage-edit-button"
+                                    to={{ pathname: "/login", state: { redirectTo: "/mypage" } }}
+                                >
+                                    로그인
+                                </Link>
+                                <Link className="mypage-auth-secondary" to="/signup">회원가입</Link>
+                            </div>
+                        </section>
+                    </main>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="mypage-shell">
             <aside className="mypage-sidebar">
                 <div className="mypage-brand">
                     <strong>BracketMaster</strong>
-                    <span>Admin Panel</span>
+                    <span>Local Dashboard</span>
                 </div>
 
                 <nav className="mypage-side-nav" aria-label="Dashboard navigation">
                     {sidebarItems.map((item) => (
-                        <Link to="/mypage" key={item.label}>
+                        <Link to={item.to} key={item.label}>
                             <Icon name={item.icon} />
                             <span>{item.label}</span>
                         </Link>
@@ -110,11 +127,11 @@ function MyPage() {
                 </nav>
 
                 <div className="mypage-side-footer">
-                    <Link to="/support">
+                    <Link to="/">
                         <Icon name="support" />
-                        <span>Support</span>
+                        <span>Landing</span>
                     </Link>
-                    <button type="button" onClick={handleLogout}>
+                    <button type="button" className="mypage-side-button" onClick={handleLogout}>
                         <Icon name="logout" />
                         <span>Logout</span>
                     </button>
@@ -124,10 +141,10 @@ function MyPage() {
             <div className="mypage-main">
                 <header className="mypage-topbar">
                     <nav aria-label="Main navigation">
-                        <Link to="/competitions">Tournaments</Link>
-                        <Link to="/bracket">Brackets</Link>
-                        <Link to="/teams">Teams</Link>
-                        <Link to="/schedule">Schedule</Link>
+                        <Link to="/competitions">대회 목록</Link>
+                        <Link to={bracketLink}>대진표</Link>
+                        <Link to="/competitions/new">대회 생성</Link>
+                        <Link to="/">홈</Link>
                     </nav>
 
                     <div className="mypage-top-actions">
@@ -154,14 +171,12 @@ function MyPage() {
                             </div>
 
                             <div>
-                                <h1>{profile.fullName}</h1>
+                                <h1>{profile.name}</h1>
                                 <p>{profile.role}</p>
                             </div>
                         </div>
 
-                        <button className="mypage-edit-button" type="button" onClick={handleEditProfile}>
-                            {currentUser ? "프로필 수정" : "로그인하기"}
-                        </button>
+                        <Link className="mypage-edit-button" to="/competitions/new">새 대회 만들기</Link>
                     </section>
 
                     <section className="mypage-card-grid">
@@ -174,19 +189,19 @@ function MyPage() {
                             <dl className="mypage-info-list">
                                 <div>
                                     <dt>이름</dt>
-                                    <dd>{profile.fullName}</dd>
+                                    <dd>{profile.name}</dd>
                                 </div>
                                 <div>
                                     <dt>학번</dt>
                                     <dd>{profile.studentId}</dd>
                                 </div>
                                 <div>
-                                    <dt>이메일</dt>
-                                    <dd>{profile.email}</dd>
+                                    <dt>연락처</dt>
+                                    <dd>{profile.phone}</dd>
                                 </div>
                                 <div>
-                                    <dt>가입일</dt>
-                                    <dd>{joinedDate}</dd>
+                                    <dt>성별</dt>
+                                    <dd>{profile.gender}</dd>
                                 </div>
                             </dl>
                         </article>
@@ -194,17 +209,22 @@ function MyPage() {
                         <article className="mypage-card mypage-status-card">
                             <span className="mypage-muted-label">계정 상태</span>
                             <div className="mypage-status-row">
-                                <span className={currentUser ? "mypage-status-dot" : "mypage-status-dot is-offline"} />
-                                <strong>{currentUser ? "활성 사용자" : "로그인 필요"}</strong>
+                                <span className="mypage-status-dot" />
+                                <strong>활성 사용자</strong>
+                            </div>
+
+                            <div className="mypage-status-summary">
+                                <span>진행 중 또는 접수 중 대회</span>
+                                <strong>{activeCount}개</strong>
                             </div>
 
                             <div className="mypage-progress-wrap">
                                 <div className="mypage-progress-label">
-                                    <span>토너먼트 완료율</span>
-                                    <strong>85%</strong>
+                                    <span>종료된 대회 비율</span>
+                                    <strong>{completionRate}%</strong>
                                 </div>
                                 <div className="mypage-progress-track">
-                                    <span />
+                                    <span style={{ width: `${completionRate}%` }} />
                                 </div>
                             </div>
                         </article>
@@ -212,41 +232,58 @@ function MyPage() {
 
                     <section className="mypage-card mypage-tournament-card">
                         <div className="mypage-card-header">
-                            <h2>참가 대회 정보</h2>
-                            <span className="mypage-pill">{myCompetitions.length} SAVED</span>
+                            <h2>최근 대회</h2>
+                            <span className="mypage-pill">{competitions.length} TOTAL</span>
                         </div>
 
-                        {myCompetitions.length > 0 ? (
-                            <div className="mypage-competition-list">
-                                {myCompetitions.map((competition) => (
-                                    <article className="mypage-competition-item" key={competition.id}>
-                                        <div>
-                                            <span>{competition.type}</span>
-                                            <h3>{competition.title}</h3>
-                                            <p>{competition.progressPeriod}</p>
-                                        </div>
-                                        <strong>{competition.status}</strong>
-                                    </article>
-                                ))}
-                            </div>
-                        ) : (
+                        {latestCompetitions.length === 0 ? (
                             <div className="mypage-empty-state">
                                 <div className="mypage-empty-icon">
                                     <Icon name="archive" />
                                 </div>
                                 <h3>준비 중</h3>
-                                <p>현재 저장된 대회가 없습니다.<br />새로운 토너먼트를 개최하거나 참가 신청을 기다려주세요.</p>
+                                <p>아직 저장된 대회가 없습니다.<br />새로운 토너먼트를 먼저 생성해주세요.</p>
+                            </div>
+                        ) : (
+                            <div className="mypage-competition-list">
+                                {latestCompetitions.map((competition) => {
+                                    const status = getCompetitionStatusInfo(competition.startDate, competition.endDate);
+
+                                    return (
+                                        <article className="mypage-competition-item" key={competition.id}>
+                                            <div className="mypage-competition-copy">
+                                                <span className={`mypage-competition-badge ${status.statusKey}`}>
+                                                    {status.label}
+                                                </span>
+                                                <h3>{competition.title}</h3>
+                                                <p>
+                                                    {formatDateLabel(competition.startDate)} - {formatDateLabel(competition.endDate)}
+                                                </p>
+                                            </div>
+
+                                            <div className="mypage-competition-meta">
+                                                <strong>{competition.participants.length} / {competition.maxParticipants}명</strong>
+                                                <Link
+                                                    to={`/bracket/${competition.id}`}
+                                                    onClick={() => setSelectedCompetitionId(competition.id)}
+                                                >
+                                                    대진표 보기
+                                                </Link>
+                                            </div>
+                                        </article>
+                                    );
+                                })}
                             </div>
                         )}
                     </section>
                 </main>
 
                 <footer className="mypage-footer">
-                    <p><strong>BracketMaster Pro</strong> © 2026 BracketMaster Pro. All rights reserved.</p>
-                    <nav aria-label="Legal links">
-                        <Link to="/privacy">Privacy Policy</Link>
-                        <Link to="/terms">Terms of Service</Link>
-                        <Link to="/support">Contact Support</Link>
+                    <p><strong>BracketMaster</strong> 로컬 데이터 기반으로 연결된 대회 관리 화면입니다.</p>
+                    <nav aria-label="Quick links">
+                        <Link to="/">홈</Link>
+                        <Link to="/competitions">대회 목록</Link>
+                        <Link to="/competitions/new">대회 생성</Link>
                     </nav>
                 </footer>
             </div>

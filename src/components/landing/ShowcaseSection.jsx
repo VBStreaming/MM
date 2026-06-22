@@ -1,6 +1,7 @@
 import { useState } from "react";
 import SectionHeading from "./SectionHeading";
 
+// 슬라이드에 보여줄 화면 설명 데이터를 배열로 분리
 const showcaseSlides = [
   {
     id: 1,
@@ -29,10 +30,12 @@ const showcaseSlides = [
 ];
 
 function ShowcaseSection() {
+  // 현재 몇 번째 화면을 보여줄지 상태값 하나로 관리
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const currentSlide = showcaseSlides[currentIndex];
 
+  // 첫 번째 화면에서는 마지막 화면으로 순환
   const goToPrevious = () => {
     setCurrentIndex((prevIndex) => {
       if (prevIndex === 0) {
@@ -43,6 +46,7 @@ function ShowcaseSection() {
     });
   };
 
+  // 마지막 화면에서는 다시 첫 번째 화면으로 순환
   const goToNext = () => {
     setCurrentIndex((prevIndex) => {
       if (prevIndex === showcaseSlides.length - 1) {
@@ -70,9 +74,11 @@ function ShowcaseSection() {
             </div>
 
             <div className="showcase-button-group">
+              {/* 이전 슬라이드로 이동 */}
               <button className="slide-button" type="button" onClick={goToPrevious}>
                 이전
               </button>
+              {/* 다음 슬라이드로 이동 */}
               <button className="slide-button slide-button--primary" type="button" onClick={goToNext}>
                 다음
               </button>
@@ -110,6 +116,7 @@ function ShowcaseSection() {
                 key={slide.id}
                 className={index === currentIndex ? "showcase-dot showcase-dot--active" : "showcase-dot"}
                 type="button"
+                // 점 버튼을 누르면 해당 화면으로 바로 이동
                 onClick={() => setCurrentIndex(index)}
                 aria-label={`${slide.title} 보기`}
               />

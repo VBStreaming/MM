@@ -56,10 +56,14 @@
 }
 
 .top-bar__brand {
+  border: 0;
+  padding: 0;
+  background: transparent;
   color: var(--color-main);
   font-size: 22px;
   font-weight: 800;
   letter-spacing: -0.03em;
+  cursor: pointer;
 }
 
 .top-bar__actions {

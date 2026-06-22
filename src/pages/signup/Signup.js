@@ -24,14 +24,35 @@ function Signup() {
         && passwordsMatch
         && agreed;
 
-    const handleStudentIdChange = (e) => {
-        setStudentId(e.target.value.replace(/\D/g, "").slice(0, 4));
+    const handleStudentIdChange = (event) => {
+        setStudentId(event.target.value.replace(/\D/g, "").slice(0, 4));
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const handleSubmit = (event) => {
+        event.preventDefault();
 
-        if (!canSubmit) {
+        if (!fullName.trim() || !studentId.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
+            setError("모든 필드를 입력해주세요.");
+            return;
+        }
+
+        if (!hasValidStudentId) {
+            setError("학번은 숫자 4자리로 입력해주세요.");
+            return;
+        }
+
+        if (password.length < 8) {
+            setError("비밀번호는 8자 이상 입력해주세요.");
+            return;
+        }
+
+        if (!passwordsMatch) {
+            setError("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+            return;
+        }
+
+        if (!agreed) {
+            setError("약관 동의가 필요합니다.");
             return;
         }
 
@@ -70,7 +91,7 @@ function Signup() {
                         <InputButton
                             id="fullName"
                             value={fullName}
-                            onChange={(e) => setFullName(e.target.value)}
+                            onChange={(event) => setFullName(event.target.value)}
                             placeholder="John Doe"
                             autoComplete="name"
                             required
@@ -98,7 +119,7 @@ function Signup() {
                             id="signupEmail"
                             type="email"
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={(event) => setEmail(event.target.value)}
                             placeholder="name@university.edu"
                             autoComplete="email"
                             required
@@ -112,7 +133,7 @@ function Signup() {
                                 id="signupPassword"
                                 type="password"
                                 value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                onChange={(event) => setPassword(event.target.value)}
                                 placeholder="password"
                                 autoComplete="new-password"
                                 minLength="8"
@@ -126,7 +147,7 @@ function Signup() {
                                 id="confirmPassword"
                                 type="password"
                                 value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                onChange={(event) => setConfirmPassword(event.target.value)}
                                 placeholder="password"
                                 autoComplete="new-password"
                                 minLength="8"
@@ -136,11 +157,13 @@ function Signup() {
                             />
                         </div>
                     </div>
+
                     {showPasswordMismatch && (
                         <p className="signup-field-note" id="password-match-note">
                             Passwords do not match yet.
                         </p>
                     )}
+
                     {studentId.length > 0 && !hasValidStudentId && (
                         <p className="signup-field-note">
                             Student ID must be exactly 4 digits.
@@ -151,7 +174,7 @@ function Signup() {
                         <input
                             type="checkbox"
                             checked={agreed}
-                            onChange={(e) => setAgreed(e.target.checked)}
+                            onChange={(event) => setAgreed(event.target.checked)}
                         />
                         <span>I agree to the Terms and Conditions and the Privacy Policy regarding data handling and competition rules.</span>
                     </label>
@@ -186,9 +209,9 @@ function Signup() {
             <footer className="signup-footer">
                 <p><strong>BracketMaster Pro</strong> © 2026 All rights reserved.</p>
                 <nav aria-label="Legal links">
-                    <a href="/privacy">Privacy Policy</a>
-                    <a href="/terms">Terms of Service</a>
-                    <a href="/support">Contact Support</a>
+                    <Link to="/">Privacy Policy</Link>
+                    <Link to="/">Terms of Service</Link>
+                    <Link to="/competitions">Contact Support</Link>
                 </nav>
             </footer>
         </main>

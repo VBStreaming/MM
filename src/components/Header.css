@@ -49,13 +49,14 @@
     font-weight: 800;
 }
 
-.site-logout-button {
+.site-nav-button {
     padding: 0;
     border: 0;
     background: transparent;
     color: #111827;
     font-size: 9px;
     font-weight: 500;
+    letter-spacing: 0;
     cursor: pointer;
 }
 
@@ -63,7 +64,7 @@
     text-decoration: underline;
 }
 
-.site-logout-button:hover {
+.site-nav-button:hover {
     text-decoration: underline;
 }
 

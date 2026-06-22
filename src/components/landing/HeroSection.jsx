@@ -1,11 +1,7 @@
-function HeroSection() {
-  const moveToSection = (sectionId) => {
-    const targetSection = document.getElementById(sectionId);
+import { useHistory } from "react-router-dom";
 
-    if (targetSection) {
-      targetSection.scrollIntoView({ behavior: "smooth" });
-    }
-  };
+function HeroSection() {
+  const history = useHistory();
 
   return (
     <section className="hero-section">
@@ -21,14 +17,14 @@ function HeroSection() {
             <button
               className="primary-button"
               type="button"
-              onClick={() => moveToSection("features")}
+              onClick={() => history.push("/competitions/new")}
             >
               대회 만들기
             </button>
             <button
               className="secondary-button"
               type="button"
-              onClick={() => moveToSection("showcase")}
+              onClick={() => history.push("/competitions")}
             >
               대진표 보기
             </button>

@@ -37,8 +37,8 @@ function CompetitionCreate() {
             return;
         }
 
-        if (!form.maxParticipants || Number(form.maxParticipants) < 1) {
-            setError("최대 인원수를 1명 이상으로 입력해주세요.");
+        if (!form.maxParticipants || Number(form.maxParticipants) < 4) {
+            setError("최대 인원수는 4명 이상으로 입력해주세요.");
             return;
         }
 
@@ -68,7 +68,7 @@ function CompetitionCreate() {
                     <h1 id="competition-create-title">대회 생성</h1>
                     <p>
                         {currentUser
-                            ? `${currentUser.fullName}님 이름으로 새로운 대회를 개최합니다.`
+                            ? `${currentUser.fullName || currentUser.name}님 이름으로 새로운 대회를 개최합니다.`
                             : "로그인한 사용자만 새로운 대회를 개최할 수 있습니다."}
                     </p>
                 </header>
@@ -113,7 +113,7 @@ function CompetitionCreate() {
                             <input
                                 id="maxParticipants"
                                 type="number"
-                                min="1"
+                                min="4"
                                 value={form.maxParticipants}
                                 onChange={(event) => updateField("maxParticipants", event.target.value)}
                                 placeholder="예: 32"

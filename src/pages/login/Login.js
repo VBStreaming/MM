@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import InputButton from "../../components/login/input-button/InputButton";
 import SubmitButton from "../../components/login/input-button/SubmitButton";
 import { loginUser } from "../../utils/authStorage";
@@ -7,14 +7,20 @@ import "./Login.css";
 
 function Login() {
     const history = useHistory();
+    const location = useLocation();
     const [identifier, setIdentifier] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState("");
-    const canSubmit = identifier.trim().length > 0 && password.length > 0;
+    const canSubmit = identifier.trim().length > 0 && password.trim().length > 0;
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const handleSubmit = (event) => {
+        event.preventDefault();
+
+        if (!canSubmit) {
+            setError("이메일 또는 학번과 비밀번호를 모두 입력해주세요.");
+            return;
+        }
 
         const result = loginUser({
             identifier,
@@ -27,7 +33,7 @@ function Login() {
         }
 
         setError("");
-        history.push("/mypage");
+        history.push(location.state?.redirectTo || "/mypage");
     };
 
     const handleBack = () => {
@@ -57,7 +63,7 @@ function Login() {
                                 id="identifier"
                                 type="text"
                                 value={identifier}
-                                onChange={(e) => setIdentifier(e.target.value)}
+                                onChange={(event) => setIdentifier(event.target.value)}
                                 placeholder="name@example.com or 2416"
                                 autoComplete="username"
                                 required
@@ -75,7 +81,7 @@ function Login() {
                                 id="password"
                                 type="password"
                                 value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                onChange={(event) => setPassword(event.target.value)}
                                 placeholder="password"
                                 autoComplete="current-password"
                                 required
@@ -88,11 +94,11 @@ function Login() {
                             <input
                                 type="checkbox"
                                 checked={rememberMe}
-                                onChange={(e) => setRememberMe(e.target.checked)}
+                                onChange={(event) => setRememberMe(event.target.checked)}
                             />
                             Remember Me
                         </label>
-                        <a href="/forgot-password">Forgot Password?</a>
+                        <Link to="/signup">Forgot Password?</Link>
                     </div>
 
                     {error && <p className="auth-error">{error}</p>}
@@ -113,9 +119,9 @@ function Login() {
             <footer className="auth-footer">
                 <p>© 2026 BracketMaster Pro. All rights reserved.</p>
                 <nav aria-label="Legal links">
-                    <a href="/privacy">Privacy Policy</a>
-                    <a href="/terms">Terms of Service</a>
-                    <a href="/support">Contact Support</a>
+                    <Link to="/">Privacy Policy</Link>
+                    <Link to="/">Terms of Service</Link>
+                    <Link to="/competitions">Contact Support</Link>
                 </nav>
             </footer>
         </main>

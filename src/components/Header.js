@@ -1,16 +1,14 @@
-import "./Header.css"
-import { useState } from "react";
+import "./Header.css";
 import { Link, useHistory } from "react-router-dom";
 import { getCurrentUser, logoutUser } from "../utils/authStorage";
 
 function Header() {
     const history = useHistory();
-    const [currentUser, setCurrentUser] = useState(() => getCurrentUser());
+    const currentUser = getCurrentUser();
 
     const handleLogout = () => {
         logoutUser();
-        setCurrentUser(null);
-        history.push("/login");
+        history.push("/");
     };
 
     return (
@@ -26,15 +24,19 @@ function Header() {
                 <Link to="/bracket">Brackets</Link>
                 {currentUser ? (
                     <>
-                        <Link className="site-user-link" to="/mypage">{currentUser.fullName}</Link>
-                        <button className="site-logout-button" type="button" onClick={handleLogout}>Logout</button>
+                        <Link className="site-user-link" to="/mypage">
+                            {currentUser.fullName || currentUser.name}
+                        </Link>
+                        <button className="site-nav-button" type="button" onClick={handleLogout}>
+                            Logout
+                        </button>
                     </>
                 ) : (
                     <Link to="/signup">Sign Up</Link>
                 )}
             </nav>
         </header>
-    )
+    );
 }
 
 export default Header;
