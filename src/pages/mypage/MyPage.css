@@ -61,6 +61,10 @@
     display: inline-flex;
     align-items: center;
     gap: 12px;
+    width: fit-content;
+    padding: 0;
+    border: 0;
+    background: transparent;
     color: #111827;
     font-size: clamp(12px, 1.15vw, 13px);
     font-weight: 600;
@@ -70,6 +74,7 @@
     text-align: left;
     cursor: pointer;
     letter-spacing: 0;
+    cursor: pointer;
 }
 
 .mypage-side-nav a:hover,
@@ -156,11 +161,17 @@
 .mypage-mini-avatar {
     width: 32px;
     height: 32px;
+    display: grid;
+    place-items: center;
     border-radius: 50%;
-    background:
-        radial-gradient(circle at 50% 34%, #f3c5a7 0 15%, transparent 16%),
-        linear-gradient(180deg, #1f2937 0 42%, #0f172a 43% 100%);
+    background: #111827;
+    color: #ffffff;
     box-shadow: inset 0 0 0 2px #e5e7eb;
+}
+
+.mypage-mini-avatar span {
+    font-size: 12px;
+    font-weight: 900;
 }
 
 .mypage-content {
@@ -395,6 +406,10 @@
     height: 10px;
     border-radius: 50%;
     background: #86efac;
+}
+
+.mypage-status-dot.is-offline {
+    background: #d1d5db;
 }
 
 .mypage-progress-wrap {

@@ -41,6 +41,14 @@
     text-decoration: none;
 }
 
+.site-nav .site-user-link {
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 800;
+}
+
 .site-nav-button {
     padding: 0;
     border: 0;

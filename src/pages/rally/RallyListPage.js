@@ -3,9 +3,9 @@ import { Link, useHistory } from "react-router-dom";
 import {
     applyToCompetition,
     formatDateLabel,
-    getCurrentUser,
     getCompetitions,
     getCompetitionStatusInfo,
+    getCurrentUser,
     hasAppliedToCompetition,
     setSelectedCompetitionId,
 } from "../../utils/localData";
@@ -126,71 +126,72 @@ function RallyListPage() {
                             </div>
                         )}
 
-                        {filteredRallies.map((rally) => (
-                            (() => {
-                                const isFull = rally.currentParticipants >= rally.maxParticipants;
-                                const canApply = rally.statusKey === "recruiting" && !isFull && !rally.alreadyApplied;
-                                const applyLabel = rally.alreadyApplied
-                                    ? "신청 완료"
-                                    : isFull
+                        {filteredRallies.map((rally) => {
+                            const isFull = rally.currentParticipants >= rally.maxParticipants;
+                            const canApply = rally.statusKey === "recruiting" && !isFull && !rally.alreadyApplied;
+                            const applyLabel = rally.alreadyApplied
+                                ? "신청 완료"
+                                : isFull
                                     ? "정원 마감"
                                     : rally.statusKey === "recruiting"
                                         ? "신청하기"
                                         : "신청 마감";
 
-                                return (
-                                    <article className="rally-row" key={rally.id}>
-                                        <div className="rally-info-cell">
-                                            <span className="rally-type-badge">{rally.typeLabel}</span>
-                                            <div className="rally-info-copy">
-                                                <h2>{rally.title}</h2>
-                                                <p>{rally.description || "설명이 아직 등록되지 않았습니다."}</p>
-                                            </div>
+                            return (
+                                <article className="rally-row" key={rally.id}>
+                                    <div className="rally-info-cell">
+                                        <span className="rally-type-badge">{rally.typeLabel}</span>
+                                        <div className="rally-info-copy">
+                                            <h2>{rally.title}</h2>
+                                            {rally.createdByName && (
+                                                <p className="rally-owner">생성자: {rally.createdByName}</p>
+                                            )}
+                                            <p>{rally.description || "설명이 아직 등록되지 않았습니다."}</p>
                                         </div>
+                                    </div>
 
-                                        <div className="rally-period-cell">
-                                            <p>
-                                                <Icon name="dots" />
-                                                <span>생성~접수: <strong>{rally.registrationPeriod}</strong></span>
-                                            </p>
-                                            <p>
-                                                <Icon name="calendar" />
-                                                <span>진행: <strong>{rally.progressPeriod}</strong></span>
-                                            </p>
-                                        </div>
+                                    <div className="rally-period-cell">
+                                        <p>
+                                            <Icon name="dots" />
+                                            <span>생성~접수: <strong>{rally.registrationPeriod}</strong></span>
+                                        </p>
+                                        <p>
+                                            <Icon name="calendar" />
+                                            <span>진행: <strong>{rally.progressPeriod}</strong></span>
+                                        </p>
+                                    </div>
 
-                                        <div className="rally-participants-cell">
-                                            <span className="rally-count-chip">{rally.currentParticipants}</span>
-                                            <strong>{rally.currentParticipants}</strong>
-                                            <span>/ {rally.maxParticipants}</span>
-                                        </div>
+                                    <div className="rally-participants-cell">
+                                        <span className="rally-count-chip">{rally.currentParticipants}</span>
+                                        <strong>{rally.currentParticipants}</strong>
+                                        <span>/ {rally.maxParticipants}</span>
+                                    </div>
 
-                                        <div className="rally-status-cell">
-                                            <span className={`rally-status-badge ${rally.statusKey}`}>
-                                                {rally.status}
-                                            </span>
-                                            <div className="rally-action-group">
-                                                <button
-                                                    className={canApply ? "rally-apply-button" : "rally-apply-button is-disabled"}
-                                                    type="button"
-                                                    onClick={() => handleApply(rally.id)}
-                                                    disabled={!canApply}
-                                                >
-                                                    {applyLabel}
-                                                </button>
-                                                <Link
-                                                    className="rally-view-link"
-                                                    to={`/bracket/${rally.id}`}
-                                                    onClick={() => setSelectedCompetitionId(rally.id)}
-                                                >
-                                                    대진표 보기
-                                                </Link>
-                                            </div>
+                                    <div className="rally-status-cell">
+                                        <span className={`rally-status-badge ${rally.statusKey}`}>
+                                            {rally.status}
+                                        </span>
+                                        <div className="rally-action-group">
+                                            <button
+                                                className={canApply ? "rally-apply-button" : "rally-apply-button is-disabled"}
+                                                type="button"
+                                                onClick={() => handleApply(rally.id)}
+                                                disabled={!canApply}
+                                            >
+                                                {applyLabel}
+                                            </button>
+                                            <Link
+                                                className="rally-view-link"
+                                                to={`/bracket/${rally.id}`}
+                                                onClick={() => setSelectedCompetitionId(rally.id)}
+                                            >
+                                                대진표 보기
+                                            </Link>
                                         </div>
-                                    </article>
-                                );
-                            })()
-                        ))}
+                                    </div>
+                                </article>
+                            );
+                        })}
                     </div>
                 </section>
 

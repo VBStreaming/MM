@@ -1,8 +1,8 @@
 import "./InputButton.css";
 
-function InputButton(props) {
+function InputButton({ className = "", ...props }) {
     return (
-        <input {...props} className="login-input" />
+        <input {...props} className={["login-input", className].filter(Boolean).join(" ")} />
     );
 }
 

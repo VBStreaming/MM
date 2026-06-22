@@ -1,39 +1,34 @@
-import InputButton from "../../components/login/input-button/InputButton";
 import { useState } from "react";
-import SubmitButton from "../../components/login/input-button/SubmitButton";
-import "./Login.css";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import { getUsers, loginUser } from "../../utils/localData";
+import InputButton from "../../components/login/input-button/InputButton";
+import SubmitButton from "../../components/login/input-button/SubmitButton";
+import { loginUser } from "../../utils/authStorage";
+import "./Login.css";
 
 function Login() {
     const history = useHistory();
     const location = useLocation();
-    const [email, setEmail] = useState("");
+    const [identifier, setIdentifier] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState("");
+    const canSubmit = identifier.trim().length > 0 && password.trim().length > 0;
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const handleSubmit = (event) => {
+        event.preventDefault();
 
-        if (!email.trim() || !password.trim()) {
-            setError("이메일과 비밀번호를 모두 입력해주세요.");
+        if (!canSubmit) {
+            setError("이메일 또는 학번과 비밀번호를 모두 입력해주세요.");
             return;
         }
 
-        if (getUsers().length === 0) {
-            setError("가입된 계정이 없습니다. 먼저 회원가입을 진행해주세요.");
-            return;
-        }
-
-        const loginResult = loginUser({
-            email,
+        const result = loginUser({
+            identifier,
             password,
-            rememberMe,
         });
 
-        if (!loginResult.success) {
-            setError(loginResult.message);
+        if (!result.ok) {
+            setError(result.message);
             return;
         }
 
@@ -54,36 +49,44 @@ function Login() {
                     </svg>
                 </div>
 
-                <h1>Welcome Back</h1>
+                <h1>Welcome back</h1>
                 <p className="auth-description">Sign in to manage your tournaments</p>
 
-                <form onSubmit={handleSubmit}>
-                    <label className="auth-label" htmlFor="email">Email</label>
-                    <div className="auth-input-wrap">
-                        <svg className="auth-input-icon" viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M4 6h16v12H4V6Zm2 2v.2l6 4.2 6-4.2V8H6Zm12 8v-5.4l-6 4.2-6-4.2V16h12Z" />
-                        </svg>
-                        <InputButton
-                            id="email"
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="name@example.com"
-                        />
+                <form className="auth-form" onSubmit={handleSubmit}>
+                    <div className="auth-field">
+                        <label className="auth-label" htmlFor="identifier">Email or Student ID</label>
+                        <div className="auth-input-wrap">
+                            <svg className="auth-input-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M4 6h16v12H4V6Zm2 2v.2l6 4.2 6-4.2V8H6Zm12 8v-5.4l-6 4.2-6-4.2V16h12Z" />
+                            </svg>
+                            <InputButton
+                                id="identifier"
+                                type="text"
+                                value={identifier}
+                                onChange={(event) => setIdentifier(event.target.value)}
+                                placeholder="name@example.com or 2416"
+                                autoComplete="username"
+                                required
+                            />
+                        </div>
                     </div>
 
-                    <label className="auth-label" htmlFor="password">Password</label>
-                    <div className="auth-input-wrap">
-                        <svg className="auth-input-icon" viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M7 10V8a5 5 0 0 1 10 0v2h2v10H5V10h2Zm2 0h6V8a3 3 0 0 0-6 0v2Zm-2 8h10v-6H7v6Z" />
-                        </svg>
-                        <InputButton
-                            id="password"
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="password"
-                        />
+                    <div className="auth-field">
+                        <label className="auth-label" htmlFor="password">Password</label>
+                        <div className="auth-input-wrap">
+                            <svg className="auth-input-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M7 10V8a5 5 0 0 1 10 0v2h2v10H5V10h2Zm2 0h6V8a3 3 0 0 0-6 0v2Zm-2 8h10v-6H7v6Z" />
+                            </svg>
+                            <InputButton
+                                id="password"
+                                type="password"
+                                value={password}
+                                onChange={(event) => setPassword(event.target.value)}
+                                placeholder="password"
+                                autoComplete="current-password"
+                                required
+                            />
+                        </div>
                     </div>
 
                     <div className="auth-options">
@@ -91,17 +94,19 @@ function Login() {
                             <input
                                 type="checkbox"
                                 checked={rememberMe}
-                                onChange={(e) => setRememberMe(e.target.checked)}
+                                onChange={(event) => setRememberMe(event.target.checked)}
                             />
                             Remember Me
                         </label>
                         <Link to="/signup">Forgot Password?</Link>
                     </div>
 
-                    {error && <p className="auth-feedback auth-feedback--error">{error}</p>}
+                    {error && <p className="auth-error">{error}</p>}
 
-                    <SubmitButton className="auth-login-button" text="Login" />
-                    <button className="auth-back-button" type="button" onClick={handleBack}>Back</button>
+                    <div className="auth-actions">
+                        <SubmitButton className="auth-login-button" text="Login" disabled={!canSubmit} />
+                        <button className="auth-back-button" type="button" onClick={handleBack}>Back</button>
+                    </div>
                 </form>
 
                 <p className="auth-signup">
@@ -112,7 +117,7 @@ function Login() {
             <p className="auth-security">Secure, encrypted login powered by BracketMaster Pro</p>
 
             <footer className="auth-footer">
-                <p>© 2024 BracketMaster Pro. All rights reserved.</p>
+                <p>© 2026 BracketMaster Pro. All rights reserved.</p>
                 <nav aria-label="Legal links">
                     <Link to="/">Privacy Policy</Link>
                     <Link to="/">Terms of Service</Link>

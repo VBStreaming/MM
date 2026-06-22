@@ -3,8 +3,8 @@ import { Link, useHistory } from "react-router-dom";
 import {
     formatDateLabel,
     getCompetitions,
-    getCurrentUser,
     getCompetitionStatusInfo,
+    getCurrentUser,
     getProfile,
     getSelectedCompetition,
     logoutUser,
@@ -78,6 +78,7 @@ function MyPage() {
         { label: "Bracket", icon: "chart", to: bracketLink },
     ];
     const latestCompetitions = competitions.slice(0, 3);
+    const initial = (profile.name || currentUser?.name || "?").slice(0, 1).toUpperCase();
 
     const handleLogout = () => {
         logoutUser();
@@ -153,7 +154,9 @@ function MyPage() {
                         <button type="button" aria-label="Settings">
                             <Icon name="settings" />
                         </button>
-                        <div className="mypage-mini-avatar" aria-label="User profile" />
+                        <div className="mypage-mini-avatar" aria-label="User profile">
+                            <span>{initial}</span>
+                        </div>
                     </div>
                 </header>
 
@@ -161,7 +164,7 @@ function MyPage() {
                     <section className="mypage-profile-header">
                         <div className="mypage-profile-main">
                             <div className="mypage-avatar">
-                                <span>{profile.name.slice(0, 1)}</span>
+                                <span>{initial}</span>
                                 <button type="button" aria-label="Change profile photo">
                                     <Icon name="camera" />
                                 </button>

@@ -272,6 +272,8 @@ function normalizeCompetition(rawCompetition, index = 0) {
         endDate: rawCompetition?.endDate || "2026-07-03",
         description: rawCompetition?.description || "",
         createdAt: rawCompetition?.createdAt || new Date().toISOString(),
+        createdById: rawCompetition?.createdById || "",
+        createdByName: rawCompetition?.createdByName || "",
         participants,
         bracketParticipants,
         bracketWinners,
@@ -485,6 +487,8 @@ export function saveCompetition(form) {
         description: form.description.trim(),
         createdAt: new Date().toISOString(),
         participants: [],
+        createdById: form.createdById,
+        createdByName: form.createdByName,
     });
     const nextCompetitions = [competition, ...getCompetitions()];
 
@@ -549,6 +553,8 @@ export function registerUser(userForm) {
     const users = getUsers();
     const normalizedEmail = userForm.email.trim().toLowerCase();
     const existingUser = users.find((user) => user.email.toLowerCase() === normalizedEmail);
+    const normalizedStudentId = userForm.studentId.trim();
+    const existingStudent = users.find((user) => user.studentId === normalizedStudentId);
 
     if (existingUser) {
         return {
@@ -557,10 +563,17 @@ export function registerUser(userForm) {
         };
     }
 
+    if (existingStudent) {
+        return {
+            success: false,
+            message: "이미 가입된 학번입니다.",
+        };
+    }
+
     const nextUser = normalizeUser({
         id: `user-${Date.now()}`,
         name: userForm.fullName.trim(),
-        studentId: userForm.studentId.trim(),
+        studentId: normalizedStudentId,
         email: normalizedEmail,
         password: userForm.password,
         role: "Participant",
@@ -584,17 +597,21 @@ export function registerUser(userForm) {
     };
 }
 
-export function loginUser({ email, password }) {
+export function loginUser({ email, identifier, password }) {
     const users = getUsers();
-    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedIdentifier = (identifier || email || "").trim().toLowerCase();
     const matchedUser = users.find((user) =>
-        user.email.toLowerCase() === normalizedEmail && user.password === password
+        (
+            user.email.toLowerCase() === normalizedIdentifier
+            || user.studentId.toLowerCase() === normalizedIdentifier
+        )
+        && user.password === password
     );
 
     if (!matchedUser) {
         return {
             success: false,
-            message: "이메일 또는 비밀번호가 올바르지 않습니다.",
+            message: "이메일 또는 학번, 비밀번호를 다시 확인해주세요.",
         };
     }
 

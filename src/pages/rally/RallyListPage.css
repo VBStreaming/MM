@@ -198,6 +198,13 @@
     line-height: 1.5;
 }
 
+.rally-owner {
+    margin: 3px 0 0;
+    color: #6b7280;
+    font-size: 11px;
+    font-weight: 700;
+}
+
 .rally-period-cell {
     display: grid;
     gap: 4px;

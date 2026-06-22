@@ -72,10 +72,14 @@
   gap: 12px;
 }
 
-.top-bar__welcome {
-  color: var(--color-muted);
-  font-size: 14px;
-  font-weight: 700;
+.top-bar__user {
+  max-width: 180px;
+  overflow: hidden;
+  color: var(--color-main);
+  font-size: 15px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .top-bar__link,

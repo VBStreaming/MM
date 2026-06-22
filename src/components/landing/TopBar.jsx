@@ -1,70 +1,69 @@
 import { useHistory } from "react-router-dom";
-import { getCurrentUser, logoutUser } from "../../utils/localData";
+import { getCurrentUser, logoutUser } from "../../utils/authStorage";
 
 function TopBar() {
-  // 로그인, 회원가입 버튼 클릭 시 경로 이동에 사용
-  const history = useHistory();
-  const currentUser = getCurrentUser();
+    const history = useHistory();
+    const currentUser = getCurrentUser();
 
-  const handleLogout = () => {
-    logoutUser();
-    history.push("/");
-  };
+    const handleLogout = () => {
+        logoutUser();
+        history.push("/");
+    };
 
-  return (
-    <header className="top-bar">
-      <div className="content-container top-bar__content">
-        <div className="top-bar__inner">
-          <button
-            className="top-bar__brand"
-            type="button"
-            onClick={() => history.push("/")}
-          >
-            Bucket Master
-          </button>
+    return (
+        <header className="top-bar">
+            <div className="content-container top-bar__content">
+                <div className="top-bar__inner">
+                    <button
+                        className="top-bar__brand"
+                        type="button"
+                        onClick={() => history.push("/")}
+                    >
+                        Bucket Master
+                    </button>
 
-          <div className="top-bar__actions">
-            {currentUser ? (
-              <>
-                <span className="top-bar__welcome">{currentUser.name}</span>
-                <button
-                  className="top-bar__link"
-                  type="button"
-                  onClick={() => history.push("/mypage")}
-                >
-                  마이페이지
-                </button>
-                <button
-                  className="top-bar__button"
-                  type="button"
-                  onClick={handleLogout}
-                >
-                  로그아웃
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  className="top-bar__link"
-                  type="button"
-                  onClick={() => history.push("/login")}
-                >
-                  로그인
-                </button>
-                <button
-                  className="top-bar__button"
-                  type="button"
-                  onClick={() => history.push("/signup")}
-                >
-                  회원가입
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-    </header>
-  );
+                    <div className="top-bar__actions">
+                        {currentUser ? (
+                            <>
+                                <span className="top-bar__user">{currentUser.fullName || currentUser.name}</span>
+                                <button
+                                    className="top-bar__link"
+                                    type="button"
+                                    onClick={() => history.push("/mypage")}
+                                >
+                                    마이페이지
+                                </button>
+                                <button
+                                    className="top-bar__button"
+                                    type="button"
+                                    onClick={handleLogout}
+                                >
+                                    로그아웃
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <button
+                                    className="top-bar__link"
+                                    type="button"
+                                    onClick={() => history.push("/login")}
+                                >
+                                    로그인
+                                </button>
+                                <button
+                                    className="top-bar__button"
+                                    type="button"
+                                    onClick={() => history.push("/signup")}
+                                >
+                                    회원가입
+                                </button>
+                            </>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </header>
+    );
 }
 
 export default TopBar;
