@@ -41,7 +41,29 @@
     text-decoration: none;
 }
 
+.site-nav .site-user-link {
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 800;
+}
+
+.site-logout-button {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #111827;
+    font-size: 9px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
 .site-nav a:hover {
+    text-decoration: underline;
+}
+
+.site-logout-button:hover {
     text-decoration: underline;
 }
 

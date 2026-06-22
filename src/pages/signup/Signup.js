@@ -1,66 +1,112 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import InputButton from "../../components/login/input-button/InputButton";
 import SubmitButton from "../../components/login/input-button/SubmitButton";
+import { signupUser } from "../../utils/authStorage";
 import "./Signup.css";
 
 function Signup() {
+    const history = useHistory();
     const [fullName, setFullName] = useState("");
     const [studentId, setStudentId] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [agreed, setAgreed] = useState(false);
+    const [error, setError] = useState("");
+    const passwordsMatch = password === confirmPassword;
+    const showPasswordMismatch = confirmPassword.length > 0 && !passwordsMatch;
+    const hasValidStudentId = /^\d{4}$/.test(studentId);
+    const canSubmit = fullName.trim().length > 0
+        && hasValidStudentId
+        && email.trim().length > 0
+        && password.length >= 8
+        && passwordsMatch
+        && agreed;
+
+    const handleStudentIdChange = (e) => {
+        setStudentId(e.target.value.replace(/\D/g, "").slice(0, 4));
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        console.log({
+        if (!canSubmit) {
+            return;
+        }
+
+        const result = signupUser({
             fullName,
             studentId,
             email,
             password,
-            confirmPassword,
-            agreed,
         });
+
+        if (!result.ok) {
+            setError(result.message);
+            return;
+        }
+
+        setError("");
+        history.push("/mypage");
     };
 
     return (
         <main className="signup-page">
-            <section className="signup-hero">
-                <h1>Create an Account</h1>
-                <p>Join the community of competitive bracket management</p>
-            </section>
-
             <section className="signup-card">
+                <div className="signup-card-header">
+                    <div className="signup-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 3 4 7v5c0 4.6 3.3 7.7 8 9 4.7-1.3 8-4.4 8-9V7l-8-4Zm0 2.2L18 8v4c0 3.4-2.2 5.8-6 6.9-3.8-1.1-6-3.5-6-6.9V8l6-2.8Zm-3 6.4 1.4-1.4 1.2 1.2L14.7 8 16 9.4l-4.4 4.8L9 11.6Z" />
+                        </svg>
+                    </div>
+                    <h1>Create an account</h1>
+                    <p>Join the community of competitive bracket management</p>
+                </div>
+
                 <form onSubmit={handleSubmit}>
-                    <label className="signup-label" htmlFor="fullName">Full Name</label>
-                    <InputButton
-                        id="fullName"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
-                        placeholder="John Doe"
-                    />
+                    <div className="signup-field">
+                        <label className="signup-label" htmlFor="fullName">Full Name</label>
+                        <InputButton
+                            id="fullName"
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
+                            placeholder="John Doe"
+                            autoComplete="name"
+                            required
+                        />
+                    </div>
 
-                    <label className="signup-label" htmlFor="studentId">Student ID (학번)</label>
-                    <InputButton
-                        id="studentId"
-                        value={studentId}
-                        onChange={(e) => setStudentId(e.target.value)}
-                        placeholder="20240001"
-                    />
+                    <div className="signup-field">
+                        <label className="signup-label" htmlFor="studentId">Student ID (학번)</label>
+                        <InputButton
+                            id="studentId"
+                            value={studentId}
+                            onChange={handleStudentIdChange}
+                            placeholder="2416"
+                            autoComplete="off"
+                            inputMode="numeric"
+                            maxLength="4"
+                            pattern="\d{4}"
+                            required
+                        />
+                    </div>
 
-                    <label className="signup-label" htmlFor="signupEmail">Email</label>
-                    <InputButton
-                        id="signupEmail"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="name@university.edu"
-                    />
+                    <div className="signup-field">
+                        <label className="signup-label" htmlFor="signupEmail">Email</label>
+                        <InputButton
+                            id="signupEmail"
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="name@university.edu"
+                            autoComplete="email"
+                            required
+                        />
+                    </div>
 
                     <div className="signup-password-grid">
-                        <div>
+                        <div className="signup-field">
                             <label className="signup-label" htmlFor="signupPassword">Password</label>
                             <InputButton
                                 id="signupPassword"
@@ -68,10 +114,13 @@ function Signup() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="password"
+                                autoComplete="new-password"
+                                minLength="8"
+                                required
                             />
                         </div>
 
-                        <div>
+                        <div className="signup-field">
                             <label className="signup-label" htmlFor="confirmPassword">Confirm Password</label>
                             <InputButton
                                 id="confirmPassword"
@@ -79,9 +128,24 @@ function Signup() {
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 placeholder="password"
+                                autoComplete="new-password"
+                                minLength="8"
+                                aria-invalid={showPasswordMismatch}
+                                aria-describedby={showPasswordMismatch ? "password-match-note" : undefined}
+                                required
                             />
                         </div>
                     </div>
+                    {showPasswordMismatch && (
+                        <p className="signup-field-note" id="password-match-note">
+                            Passwords do not match yet.
+                        </p>
+                    )}
+                    {studentId.length > 0 && !hasValidStudentId && (
+                        <p className="signup-field-note">
+                            Student ID must be exactly 4 digits.
+                        </p>
+                    )}
 
                     <label className="signup-terms">
                         <input
@@ -92,7 +156,9 @@ function Signup() {
                         <span>I agree to the Terms and Conditions and the Privacy Policy regarding data handling and competition rules.</span>
                     </label>
 
-                    <SubmitButton className="signup-submit-button" text="Sign Up" />
+                    {error && <p className="signup-form-error">{error}</p>}
+
+                    <SubmitButton className="signup-submit-button" text="Sign Up" disabled={!canSubmit} />
                 </form>
 
                 <div className="signup-divider">
@@ -118,7 +184,7 @@ function Signup() {
             </p>
 
             <footer className="signup-footer">
-                <p><strong>BracketMaster Pro</strong> © 2024 All rights reserved.</p>
+                <p><strong>BracketMaster Pro</strong> © 2026 All rights reserved.</p>
                 <nav aria-label="Legal links">
                     <a href="/privacy">Privacy Policy</a>
                     <a href="/terms">Terms of Service</a>

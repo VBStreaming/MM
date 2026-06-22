@@ -1,5 +1,7 @@
 import "./MyPage.css";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { getCurrentUser, getUserInitial, logoutUser } from "../../utils/authStorage";
+import { getCompetitionsByUser } from "../../utils/competitionStorage";
 
 const sidebarItems = [
     {
@@ -65,6 +67,31 @@ function Icon({ name }) {
 }
 
 function MyPage() {
+    const history = useHistory();
+    const currentUser = getCurrentUser();
+    const profile = currentUser || {
+        fullName: "Guest User",
+        studentId: "----",
+        email: "로그인 후 표시됩니다",
+        role: "로그인이 필요합니다",
+    };
+    const joinedDate = currentUser?.createdAt
+        ? new Date(currentUser.createdAt).toLocaleDateString("ko-KR")
+        : "-";
+    const initial = getUserInitial(currentUser);
+    const myCompetitions = getCompetitionsByUser(currentUser?.id);
+
+    const handleLogout = () => {
+        logoutUser();
+        history.push("/login");
+    };
+
+    const handleEditProfile = () => {
+        if (!currentUser) {
+            history.push("/login");
+        }
+    };
+
     return (
         <div className="mypage-shell">
             <aside className="mypage-sidebar">
@@ -87,18 +114,18 @@ function MyPage() {
                         <Icon name="support" />
                         <span>Support</span>
                     </Link>
-                    <Link to="/login">
+                    <button type="button" onClick={handleLogout}>
                         <Icon name="logout" />
                         <span>Logout</span>
-                    </Link>
+                    </button>
                 </div>
             </aside>
 
             <div className="mypage-main">
                 <header className="mypage-topbar">
                     <nav aria-label="Main navigation">
-                        <Link to="/tournaments">Tournaments</Link>
-                        <Link to="/brackets">Brackets</Link>
+                        <Link to="/competitions">Tournaments</Link>
+                        <Link to="/bracket">Brackets</Link>
                         <Link to="/teams">Teams</Link>
                         <Link to="/schedule">Schedule</Link>
                     </nav>
@@ -110,7 +137,9 @@ function MyPage() {
                         <button type="button" aria-label="Settings">
                             <Icon name="settings" />
                         </button>
-                        <div className="mypage-mini-avatar" aria-label="User profile" />
+                        <div className="mypage-mini-avatar" aria-label="User profile">
+                            <span>{initial}</span>
+                        </div>
                     </div>
                 </header>
 
@@ -118,19 +147,21 @@ function MyPage() {
                     <section className="mypage-profile-header">
                         <div className="mypage-profile-main">
                             <div className="mypage-avatar">
-                                <span>김</span>
+                                <span>{initial}</span>
                                 <button type="button" aria-label="Change profile photo">
                                     <Icon name="camera" />
                                 </button>
                             </div>
 
                             <div>
-                                <h1>김지수</h1>
-                                <p>Senior Tournament Coordinator</p>
+                                <h1>{profile.fullName}</h1>
+                                <p>{profile.role}</p>
                             </div>
                         </div>
 
-                        <button className="mypage-edit-button" type="button">프로필 수정</button>
+                        <button className="mypage-edit-button" type="button" onClick={handleEditProfile}>
+                            {currentUser ? "프로필 수정" : "로그인하기"}
+                        </button>
                     </section>
 
                     <section className="mypage-card-grid">
@@ -143,19 +174,19 @@ function MyPage() {
                             <dl className="mypage-info-list">
                                 <div>
                                     <dt>이름</dt>
-                                    <dd>현승민</dd>
+                                    <dd>{profile.fullName}</dd>
                                 </div>
                                 <div>
                                     <dt>학번</dt>
-                                    <dd>2412</dd>
+                                    <dd>{profile.studentId}</dd>
                                 </div>
                                 <div>
-                                    <dt>연락처</dt>
-                                    <dd>010-1234-5678</dd>
+                                    <dt>이메일</dt>
+                                    <dd>{profile.email}</dd>
                                 </div>
                                 <div>
-                                    <dt>성별</dt>
-                                    <dd>여성</dd>
+                                    <dt>가입일</dt>
+                                    <dd>{joinedDate}</dd>
                                 </div>
                             </dl>
                         </article>
@@ -163,8 +194,8 @@ function MyPage() {
                         <article className="mypage-card mypage-status-card">
                             <span className="mypage-muted-label">계정 상태</span>
                             <div className="mypage-status-row">
-                                <span className="mypage-status-dot" />
-                                <strong>활성 사용자</strong>
+                                <span className={currentUser ? "mypage-status-dot" : "mypage-status-dot is-offline"} />
+                                <strong>{currentUser ? "활성 사용자" : "로그인 필요"}</strong>
                             </div>
 
                             <div className="mypage-progress-wrap">
@@ -182,21 +213,36 @@ function MyPage() {
                     <section className="mypage-card mypage-tournament-card">
                         <div className="mypage-card-header">
                             <h2>참가 대회 정보</h2>
-                            <span className="mypage-pill">ARCHIVE</span>
+                            <span className="mypage-pill">{myCompetitions.length} SAVED</span>
                         </div>
 
-                        <div className="mypage-empty-state">
-                            <div className="mypage-empty-icon">
-                                <Icon name="archive" />
+                        {myCompetitions.length > 0 ? (
+                            <div className="mypage-competition-list">
+                                {myCompetitions.map((competition) => (
+                                    <article className="mypage-competition-item" key={competition.id}>
+                                        <div>
+                                            <span>{competition.type}</span>
+                                            <h3>{competition.title}</h3>
+                                            <p>{competition.progressPeriod}</p>
+                                        </div>
+                                        <strong>{competition.status}</strong>
+                                    </article>
+                                ))}
                             </div>
-                            <h3>준비 중</h3>
-                            <p>현재 진행 중이거나 예정된 대회가 없습니다.<br />새로운 토너먼트를 개최하거나 참가 신청을 기다려주세요.</p>
-                        </div>
+                        ) : (
+                            <div className="mypage-empty-state">
+                                <div className="mypage-empty-icon">
+                                    <Icon name="archive" />
+                                </div>
+                                <h3>준비 중</h3>
+                                <p>현재 저장된 대회가 없습니다.<br />새로운 토너먼트를 개최하거나 참가 신청을 기다려주세요.</p>
+                            </div>
+                        )}
                     </section>
                 </main>
 
                 <footer className="mypage-footer">
-                    <p><strong>BracketMaster Pro</strong> © 2024 BracketMaster Pro. All rights reserved.</p>
+                    <p><strong>BracketMaster Pro</strong> © 2026 BracketMaster Pro. All rights reserved.</p>
                     <nav aria-label="Legal links">
                         <Link to="/privacy">Privacy Policy</Link>
                         <Link to="/terms">Terms of Service</Link>

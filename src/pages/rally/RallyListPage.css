@@ -133,6 +133,10 @@
     gap: 12px;
 }
 
+.rally-info-cell > div {
+    min-width: 0;
+}
+
 .rally-type-badge {
     flex: 0 0 auto;
     min-width: 50px;
@@ -160,6 +164,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.rally-owner {
+    margin: 3px 0 0;
+    color: #6b7280;
+    font-size: 11px;
+    font-weight: 700;
 }
 
 .rally-period-cell {

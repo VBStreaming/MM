@@ -68,6 +68,16 @@
   gap: 12px;
 }
 
+.top-bar__user {
+  max-width: 180px;
+  overflow: hidden;
+  color: var(--color-main);
+  font-size: 15px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .top-bar__link,
 .top-bar__button {
   display: inline-flex;

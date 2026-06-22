@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { getCompetitions } from "../../utils/competitionStorage";
 import "./RallyListPage.css";
 
 const rallies = [
@@ -78,9 +79,10 @@ function Icon({ name }) {
 
 function RallyListPage() {
     const [activeTab, setActiveTab] = useState("all");
+    const allRallies = [...getCompetitions(), ...rallies];
     const filteredRallies = activeTab === "all"
-        ? rallies
-        : rallies.filter((rally) => rally.statusKey === activeTab);
+        ? allRallies
+        : allRallies.filter((rally) => rally.statusKey === activeTab);
 
     return (
         <main className="rally-list-page">
@@ -123,7 +125,12 @@ function RallyListPage() {
                             <article className="rally-row" key={rally.id}>
                                 <div className="rally-info-cell">
                                     <span className="rally-type-badge">{rally.type}</span>
-                                    <h2>{rally.title}</h2>
+                                    <div>
+                                        <h2>{rally.title}</h2>
+                                        {rally.createdByName && (
+                                            <p className="rally-owner">생성자: {rally.createdByName}</p>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <div className="rally-period-cell">
@@ -154,7 +161,7 @@ function RallyListPage() {
                 </section>
 
                 <footer className="rally-list-footer">
-                    <p>총 12개의 대회 중 4개 표시됨</p>
+                    <p>총 {allRallies.length}개의 대회 중 {filteredRallies.length}개 표시됨</p>
 
                     <div className="rally-pagination" aria-label="대회 목록 페이지">
                         <button type="button" aria-label="이전 페이지">

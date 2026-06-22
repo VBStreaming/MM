@@ -1,6 +1,6 @@
-function SubmitButton(props) {
+function SubmitButton({ className, type = "submit", text, ...buttonProps }) {
     return (
-        <button className={props.className} type={props.type || "submit"}>{props.text}</button>
+        <button className={className} type={type} {...buttonProps}>{text}</button>
     )
 }
 

@@ -56,18 +56,25 @@
 }
 
 .mypage-side-nav a,
-.mypage-side-footer a {
+.mypage-side-footer a,
+.mypage-side-footer button {
     display: inline-flex;
     align-items: center;
     gap: 12px;
+    width: fit-content;
+    padding: 0;
+    border: 0;
+    background: transparent;
     color: #111827;
     font-size: clamp(12px, 1.15vw, 13px);
     font-weight: 600;
     letter-spacing: 0;
+    cursor: pointer;
 }
 
 .mypage-side-nav a:hover,
-.mypage-side-footer a:hover {
+.mypage-side-footer a:hover,
+.mypage-side-footer button:hover {
     color: #374151;
 }
 
@@ -144,11 +151,17 @@
 .mypage-mini-avatar {
     width: 32px;
     height: 32px;
+    display: grid;
+    place-items: center;
     border-radius: 50%;
-    background:
-        radial-gradient(circle at 50% 34%, #f3c5a7 0 15%, transparent 16%),
-        linear-gradient(180deg, #1f2937 0 42%, #0f172a 43% 100%);
+    background: #111827;
+    color: #ffffff;
     box-shadow: inset 0 0 0 2px #e5e7eb;
+}
+
+.mypage-mini-avatar span {
+    font-size: 12px;
+    font-weight: 900;
 }
 
 .mypage-content {
@@ -341,6 +354,10 @@
     background: #86efac;
 }
 
+.mypage-status-dot.is-offline {
+    background: #d1d5db;
+}
+
 .mypage-progress-wrap {
     margin-top: auto;
     padding-top: clamp(28px, 4vw, 38px);
@@ -432,6 +449,57 @@
     color: #374151;
     font-size: 13px;
     line-height: 1.55;
+}
+
+.mypage-competition-list {
+    margin-top: clamp(24px, 3vw, 32px);
+    display: grid;
+    gap: 12px;
+}
+
+.mypage-competition-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 18px 20px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #f9fafb;
+}
+
+.mypage-competition-item div {
+    min-width: 0;
+}
+
+.mypage-competition-item span {
+    color: #6b7280;
+    font-size: 10px;
+    font-weight: 900;
+}
+
+.mypage-competition-item h3 {
+    margin: 5px 0 0;
+    color: #111827;
+    font-size: 17px;
+    line-height: 1.3;
+}
+
+.mypage-competition-item p {
+    margin: 6px 0 0;
+    color: #374151;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.mypage-competition-item strong {
+    flex: 0 0 auto;
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: #eef2f7;
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 900;
 }
 
 .mypage-footer {

@@ -1,7 +1,12 @@
 import { useState } from "react";
+import { useHistory } from "react-router-dom";
+import { getCurrentUser } from "../../utils/authStorage";
+import { saveCompetition } from "../../utils/competitionStorage";
 import "./CompetitionCreate.css";
 
 function CompetitionCreate() {
+    const history = useHistory();
+    const currentUser = getCurrentUser();
     const [form, setForm] = useState({
         title: "",
         type: "league",
@@ -21,6 +26,11 @@ function CompetitionCreate() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+
+        if (!currentUser) {
+            setError("로그인 후 대회를 생성할 수 있습니다.");
+            return;
+        }
 
         if (!form.title.trim()) {
             setError("대회 이름을 입력해주세요.");
@@ -43,7 +53,12 @@ function CompetitionCreate() {
         }
 
         setError("");
-        console.log(form);
+        saveCompetition(form, currentUser);
+        history.push("/competitions");
+    };
+
+    const handleCancel = () => {
+        history.push("/competitions");
     };
 
     return (
@@ -51,7 +66,11 @@ function CompetitionCreate() {
             <section className="competition-create-shell" aria-labelledby="competition-create-title">
                 <header className="competition-create-header">
                     <h1 id="competition-create-title">대회 생성</h1>
-                    <p>새로운 대회를 개최하고 규칙을 설정하세요.</p>
+                    <p>
+                        {currentUser
+                            ? `${currentUser.fullName}님 이름으로 새로운 대회를 개최합니다.`
+                            : "로그인한 사용자만 새로운 대회를 개최할 수 있습니다."}
+                    </p>
                 </header>
 
                 <form className="competition-create-form" onSubmit={handleSubmit}>
@@ -135,7 +154,7 @@ function CompetitionCreate() {
                     </div>
 
                     <div className="competition-create-actions">
-                        <button type="button" className="competition-cancel-button">
+                        <button type="button" className="competition-cancel-button" onClick={handleCancel}>
                             취소
                         </button>
                         <button type="submit" className="competition-submit-button">
